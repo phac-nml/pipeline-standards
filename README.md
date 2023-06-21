@@ -8,6 +8,39 @@ This document describes the specification for developing Nextflow pipelines. Thi
 
 Input for pipelines follows the [nfcore parameters][nfcore-parameters] specification. In particular, input will be passed via a CSV file listing samples and reads (using `--input`) as described in <https://nf-co.re/viralrecon/2.6.0/usage>.
 
+# Resource requirements
+
+To define computational resource requirements for each process, we will follow the [nf-core][] standards as much as possible, where resources are adjusted by a `label` in each `process` of a pipeline. Defining these resources will be divided into these two roles:
+
+* **Pipeline developer**: Responsible for setting an appropriate `label` in each process of the NextFlow pipeline to appropriatly define required resources.
+* **System administrator**: Responsible for defining and maintaining the mapping between a `label` and the specific resources required by a pipeline.
+
+## Pipeline developer
+
+The pipeline developer will add a `label` to each `process` of a NextFlow pipeline to adjust resources. For example:
+
+```
+process name {
+    label 'process_single'
+
+    // ...
+}
+```
+
+### Accepted resource labels
+
+The following labels will be accepted:
+
+* `proccess_single`
+* `process_low`
+* `process_medium`
+* `process_high`
+* `process_very_high`: An addition over those provided by nf-core.
+
+## System administrator
+
+The system administrator is responsible for maintaining a mapping between the `label` and the specific resources required by a pipeline.
+
 # Output
 
 Output will consit of a JSON file specifying metadata to associate with each sample:
@@ -48,5 +81,6 @@ CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 
 [nfcore-pipeline-schema]: https://nf-co.re/tools/#pipeline-schema
+[nf-core]: https://nf-co.re/
 [nfcore-parameters]: https://nf-co.re/docs/contributing/guidelines/requirements/parameters
 [ga4gh-wes]: https://ga4gh.github.io/workflow-execution-service-schemas/docs/
