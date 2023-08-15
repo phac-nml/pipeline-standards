@@ -65,6 +65,10 @@ Pipelines will be executed via the [GA4GH Workflow Execution Service][ga4gh-wes]
 * [nfcore parameters][nfcore-parameters]
 * [GA4GH Workflow Execution Service][ga4gh-wes]
 
+# Publishing guidelines
+
+Our intention is to follow, as much as possible, the standards and practices set out by nf-core. However, we leave it as optional to actually publish pipelines/modules/subworkflows with the official nf-core repositories. We would encourage this where it makes sense in order to support re-use and giving back to the community (please refer to the [nf-core publishing requirements][] for the guidelines in this case). However, it is perfectly acceptible to publish pipelines/modules/subworkflows in separate Git repositories outside of nf-core. Please see the [if the guidelines don't fit][nf-core-external-development] section of the nf-core documentation for more information on this scenario and other locations to list your pipeline.
+
 # Legal
 
 Copyright 2023 Government of Canada
@@ -84,3 +88,5 @@ specific language governing permissions and limitations under the License.
 [nf-core]: https://nf-co.re/
 [nfcore-parameters]: https://nf-co.re/docs/contributing/guidelines/requirements/parameters
 [ga4gh-wes]: https://ga4gh.github.io/workflow-execution-service-schemas/docs/
+[nf-core publishing requirements]: https://nf-co.re/docs/contributing/guidelines#requirements
+[nf-core-external-development]: https://nf-co.re/docs/contributing/guidelines#if-the-guidelines-dont-fit
