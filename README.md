@@ -61,7 +61,30 @@ Output files will be placed into a directory specified by the `--outdir` paramet
 
 ## 3.2. IRIDA Next JSON
 
-An `output/iridanext.output.json.gz` file will be written, which specifies the files and metadata to store into IRIDA Next. This file will look like:
+An `output/iridanext.output.json.gz` file will be written, which specifies the files and metadata to store into IRIDA Next.
+
+### 3.2.1. Minimal example
+
+A minimal example of the `iridanext.output.json.gz` is:
+
+**output/iridanext.output.json.gz**:
+```json
+{
+    "files": {
+        "global": [],
+        "samples": {}
+    },
+    "metadata": {
+        "samples": {}
+    }
+}
+```
+
+This describes the minimal keys and structure for the JSON file.
+
+### 3.2.2. Complete example
+
+A complete example of this file with more data filled in is as below.
 
 **output/iridanext.output.json.gz**:
 ```json
@@ -91,11 +114,11 @@ An `output/iridanext.output.json.gz` file will be written, which specifies the f
 }
 ```
 
-### 3.2.1. Output files
+### 3.2.3. Output files
 
 The `files` section lists the files to store within IRIDA Next (files not listed here will not be stored). This consists of two different sections:
 
-#### 3.2.1.1. global
+#### 3.2.3.1. global
 
 The `global` section defines a list of files associated with the pipeline globally. Each file entry is a JSON object with a single key `path` defining the path to the file (relative to the `output` directory). More keys may be added in the future.
 
@@ -105,7 +128,7 @@ The `global` section defines a list of files associated with the pipeline global
 ]
 ```
 
-#### 3.2.1.2. samples
+#### 3.2.3.2. samples
 
 The `samples` section defines a list of files to be associated with each sample individual (e.g., genome assemblies). Each sample identifier should correspond to the same identifer specified in the `--input` samplesheet. Each file entry is a JSON object with a single key `path` defining the path to the file (relative to the `output` directory).
 
@@ -117,7 +140,7 @@ The `samples` section defines a list of files to be associated with each sample 
 }
 ```
 
-### 3.2.2. Metadata
+### 3.2.4. Metadata
 
 The `metadata` section contains structured data to load within the IRIDA Next database. Currently there is only one type of metadata, `samples`.
 
@@ -137,7 +160,7 @@ The `samples` metadata object consists of keys corresponding to sample identifie
 }
 ```
 
-#### 3.2.2.1. Simplified metadata JSON
+#### 3.2.4.1. Simplified metadata JSON
 
 The simplified metadata JSON consists of only a single level of key-value pairs under each `sample` in the metadata object. This will be used to simplify integration of metadata with IRIDA Next prior to support for more complicated data structures.
 
