@@ -63,62 +63,19 @@ By default, the samplesheet schema assumes you have three input columns: `sample
 
 For custom types of data for a pipeline, please modify this JSON schema by modifying the `assets/schema_input.json` file. Also, make sure your pipeline is configured to use [nf-validation fromSamplesheet][nf-validation fromsamplesheet] to create a channel of input data for your pipeline from an input CSV file that follows this JSON schema.
 
-### 1.3.2. Match CSV columns to IRIDA Next data
+#### 1.3.1.1. Select column names from IRIDA Next keywords
 
-The default `--input` CSV file consists of the columns `sample`, `fastq_1`, and `fastq_2`. These will be automatically matched up to a sample identifier, and paired-end (or single-end) fastq files stored within IRIDA Next.
+In order to select data from IRIDA Next, please use one of the following keywords as column names in the `--input` CSV file.
 
-In order to match up additional information, you will need to define a `assets/irida-next.json` specification file that matches `--input` CSV file columns to keywords in IRIDA Next for selecting data. For example:
+* **sample**: The IRIDA Next sample identifier.
+* **fastq_1**: The first of paired-end Illumina fastq files (or a single-end Illumina fastq file).
+* **fastq_2**: The second of paired-end Illumina fastq files (leave empty if using single-end data).
+* **nanopore**: The nanopore reads fastq file.
+* **assembly_fasta**: The assembled genome (in FASTA format).
+* **allele_profiles**: A file consisting of the allelic profiles of selected samples for cg/wgMLST nomenclature/clustering.
+* **scheme_name**: The MLST scheme name for cg/wgMLST nomenclature/clustering.
 
-**assets/irida-next.json**
-```json
-{
-    "specification" : {
-        "version": "1.0.0"
-    },
-
-    "inputs": {
-        "input": {
-            "sample": "sample_id",
-            "organism": "organism_name",
-            "assembly": "assembly_fasta",
-        }
-    }
-}
-```
-
-#### 1.3.2.1. Specification section
-
-The `specification` section defines information about the IRIDA Next specification. Here, the only key available is the version (included so that this file can be expanded later).
-
-```json
-{
-    "specification" : {
-        "version": "1.0.0"
-    }
-}
-```
-
-#### 1.3.2.2. Inputs section
-
-The `inputs` section defines how to map column names in the input CSV file to specific types of data in IRIDA Next.
-
-```json
-{
-    "inputs": {
-        "input": {
-            "sample": "sample_id",
-            "fastq_1": "illumina_fastq_1",
-            "fastq_2": "illumina_fastq_2",
-            "nanopore": "nanopore_fastq",
-            "assembly": "assembly_fasta",
-        }
-    }
-}
-```
-
-Here, only one type of key is available, `input`, which corresponds to the `--input` CSV file. This consists of key-value pairs that define data to select, in the form of `"[SAMPLESHEET COLUMN NAME]": "[IRIDA NEXT DATA]"`.
-
-The `"[SAMPLESHEET COLUMN NAME]"`
+For an idea of a more advanced method of selecting data from IRIDA Next, please see [iridanext-samplesheet.md][].
 
 # 2. Resource requirements
 
