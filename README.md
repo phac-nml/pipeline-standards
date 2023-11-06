@@ -77,39 +77,6 @@ In order to select data from IRIDA Next, please use one of the following keyword
 
 For an idea of a more advanced method of selecting data from IRIDA Next, please see [IRIDA Next samplesheet ideas documentation][iridanext-samplesheet].
 
-# 2. Resource requirements
-
-To define computational resource requirements for each process, we will follow the [nf-core][] standards as much as possible, where resources are adjusted by a `label` in each `process` of a pipeline. Defining these resources will be divided into these two roles:
-
-* **Pipeline developer**: Responsible for setting an appropriate `label` in each process of the NextFlow pipeline to appropriatly define required resources.
-* **System administrator**: Responsible for defining and maintaining the mapping between a `label` and the specific resources required by a pipeline.
-
-## 2.1. Pipeline developer
-
-The pipeline developer will add a `label` to each `process` of a NextFlow pipeline to adjust resources. For example:
-
-```
-process name {
-    label 'process_single'
-
-    // ...
-}
-```
-
-### 2.1.1. Accepted resource labels
-
-The following labels will be accepted:
-
-* `proccess_single`
-* `process_low`
-* `process_medium`
-* `process_high`
-* `process_very_high`: An addition over those provided by nf-core.
-
-## 2.2. System administrator
-
-The system administrator is responsible for maintaining a mapping between the `label` and the specific resources required by a pipeline.
-
 # 3. Output
 
 ## 3.1. Files
@@ -245,13 +212,46 @@ The below is the equivalent simplified JSON from the version defined in [3.2.2. 
 
 Pipelines will be executed via the [GA4GH Workflow Execution Service][ga4gh-wes] API.
 
-# 5. Resources
+# 5. Resource requirements
+
+To define computational resource requirements for each process, we will follow the [nf-core][] standards as much as possible, where resources are adjusted by a `label` in each `process` of a pipeline. Defining these resources will be divided into these two roles:
+
+* **Pipeline developer**: Responsible for setting an appropriate `label` in each process of the NextFlow pipeline to appropriatly define required resources.
+* **System administrator**: Responsible for defining and maintaining the mapping between a `label` and the specific resources required by a pipeline.
+
+## 5.1. Pipeline developer
+
+The pipeline developer will add a `label` to each `process` of a NextFlow pipeline to adjust resources. For example:
+
+```
+process name {
+    label 'process_single'
+
+    // ...
+}
+```
+
+### 5.1.1. Accepted resource labels
+
+The following labels will be accepted:
+
+* `proccess_single`
+* `process_low`
+* `process_medium`
+* `process_high`
+* `process_very_high`: An addition over those provided by nf-core.
+
+## 5.2. System administrator
+
+The system administrator is responsible for maintaining a mapping between the `label` and the specific resources required by a pipeline.
+
+# 6. Other resources
 
 * [nfcore pipeline schema][nfcore-pipeline-schema]
 * [nfcore parameters][nfcore-parameters]
 * [GA4GH Workflow Execution Service][ga4gh-wes]
 
-# 6. Publishing guidelines
+# 7. Publishing guidelines
 
 Our intention is to follow, as much as possible, the standards and practices set out by nf-core. However, we leave it as optional to actually publish pipelines/modules/subworkflows with the official nf-core repositories. We would encourage this where it makes sense in order to support re-use and giving back to the community (please refer to the [nf-core publishing requirements][] for the guidelines in this case). However, it is perfectly acceptible to publish pipelines/modules/subworkflows in separate Git repositories outside of nf-core. Please see the [if the guidelines don't fit][nf-core-external-development] and [using nf-core components outside of nf-core][nf-core-outside-nf-core] sections of the nf-core documentation for more information on this scenario and other locations to list your pipeline.
 
