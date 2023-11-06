@@ -75,7 +75,7 @@ In order to select data from IRIDA Next, please use one of the following keyword
 * **allele_profiles**: A file consisting of the allelic profiles of selected samples for cg/wgMLST nomenclature/clustering.
 * **scheme_name**: The MLST scheme name for cg/wgMLST nomenclature/clustering.
 
-For an idea of a more advanced method of selecting data from IRIDA Next, please see [IRIDA Next samplesheet ideas documentation][iridanext-samplesheet.md].
+For an idea of a more advanced method of selecting data from IRIDA Next, please see [IRIDA Next samplesheet ideas documentation][iridanext-samplesheet].
 
 # 2. Resource requirements
 
