@@ -75,7 +75,7 @@ In order to select data from IRIDA Next, please use one of the following keyword
 * **allele_profiles**: A file consisting of the allelic profiles of selected samples for cg/wgMLST nomenclature/clustering.
 * **scheme_name**: The MLST scheme name for cg/wgMLST nomenclature/clustering.
 
-For an idea of a more advanced method of selecting data from IRIDA Next, please see [iridanext-samplesheet.md][].
+For an idea of a more advanced method of selecting data from IRIDA Next, please see [IRIDA Next samplesheet ideas documentation][iridanext-samplesheet.md].
 
 # 2. Resource requirements
 
@@ -279,3 +279,4 @@ specific language governing permissions and limitations under the License.
 [nf-core-outside-nf-core]: https://nf-co.re/docs/contributing/tutorials/unofficial_pipelines
 [nf-validation samplesheet]: https://nextflow-io.github.io/nf-validation/nextflow_schema/sample_sheet_schema_specification/
 [nf-validation fromSamplesheet]: https://nextflow-io.github.io/nf-validation/samplesheets/fromSamplesheet/
+[iridanext-samplesheet]: iridanext-samplesheet.md
