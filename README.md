@@ -6,7 +6,11 @@ This document describes the specification for developing IRIDA Next Nextflow pip
 
 # 1. Input
 
-Input for pipelines follows the [nfcore parameters][nfcore-parameters] specification. In particular, input will be passed via a CSV file listing samples and reads (using `--input`).
+Input for pipelines follows the [nfcore parameters][nfcore-parameters] specification. In particular, input data will be passed via a CSV file, where each row represents data that can be processed independently through the pipeline (commonly a sample). The input CSV file is passed using the `--input` parameter to a pipeline (e.g., `--input samples.csv`).
+
+Within Nextflow, this `--input samples.csv` file is converted into a channel where each element within the channel corresponds to a single row of the input CSV file (e.g., each element in the channel contains the sample identifier and the input fastq files). This conversion from the input CSV file to a channel of tuples is performed using the [nf-validation fromSamplesheet][] function.
+
+*Note: Commonly this `--input` CSV file is referred to as a samplesheet since it's often used to store data associated with a single sample, but it could be used to store other types of data as well.*
 
 ## 1.1. Default samplesheet
 
@@ -16,9 +20,105 @@ The default samplesheet looks like:
 |---------|--------------|--------------|
 | SampleA | file_1.fq.gz | file_2.fq.gz |
 
-## 1.2. Modify samplesheet
+## 1.2. Types of input data
 
-In order to modify the samplesheet structure, please follow the [nf-validation samplesheet schema specification][nf-validation samplesheet]. This involves modifying the `assets/schema_input.json` JSON schema defining the expected fields (columns) in a samplesheet and configuring your pipeline to use [nf-validation fromSamplesheet][nf-validation fromsamplesheet] to create a channel of input data for your pipeline.
+There are two types of input data: **files** and **simple**.
+
+### 1.2.1. Input files
+
+An input file consists of some data stored within a file external to the CSV file passed to `--input`. Commonly this would be sequence reads (and would be indicated with the `fastq_1` and `fastq_2` columns in the CSV file above). However, this could be any data intended to be delivered to pipeline steps via a channel (e.g., `bam` files of aligned reads, `fasta` files of assembled genomes, `csv` files of allelic profiles).
+
+#### 1.2.1.1. Example sample input files
+
+| sample  | fastq_1 **(an input file)** | fastq_2 **(another input file)** | assembly **(another input file)** |
+|---------|--------------|--------------|----|
+| SampleA | file_1.fq.gz | file_2.fq.gz | |
+| SampleB | | | assembly.fa.gz |
+
+#### 1.2.1.2. Example allelic profile input files
+
+| profile_id | scheme    | alleles **(input file)** |
+|------------|-----------|--------------------------|
+| ProfilesA  | senterica | alleles.tsv.gz           |
+
+### 1.2.2. Simple input types
+
+A simple input type is something that can be represented within a cell in a CSV file without reference to some external file (e.g., a Number or a String). In integration with IRIDA Next, these will often be derived from contextual metadata of a sample (e.g., Organism) or will be the sample identifier.
+
+#### 1.2.2.1. Example simple input types
+
+| sample **(simple input)**  | organism **(simple input)** | fastq_1      | fastq_2      |
+|----------------------------|-----------------------------|--------------|--------------|
+| SampleA                    | Salmonella enterica         | file_1.fq.gz | file_2.fq.gz |
+
+## 1.3. Modify samplesheet
+
+In order to modify the samplesheet structure there are two main tasks to complete.
+
+### 1.3.1. Update samplesheet schema specification
+
+The [nf-validation samplesheet schema specification][nf-validation samplesheet] defines the structure of the input samplesheet for a pipeline. This consists of a JSON schema file and can be modified to add different columns to the samplesheet for different types of input. This file also accepts the definition of rules for validating the data passed within the samplesheet (e.g., if a column requires only numeric data, this can be defined within the JSON schema).
+
+By default, the samplesheet schema assumes you have three input columns: `sample`, `fastq_1`, and `fastq_2`. Single-end data is handled by leaving `fastq_2` blank.
+
+For custom types of data for a pipeline, please modify this JSON schema by modifying the `assets/schema_input.json` file. Also, make sure your pipeline is configured to use [nf-validation fromSamplesheet][nf-validation fromsamplesheet] to create a channel of input data for your pipeline from an input CSV file that follows this JSON schema.
+
+### 1.3.2. Match CSV columns to IRIDA Next data
+
+The default `--input` CSV file consists of the columns `sample`, `fastq_1`, and `fastq_2`. These will be automatically matched up to a sample identifier, and paired-end (or single-end) fastq files stored within IRIDA Next.
+
+In order to match up additional information, you will need to define a `assets/irida-next.json` specification file that matches `--input` CSV file columns to keywords in IRIDA Next for selecting data. For example:
+
+**assets/irida-next.json**
+```json
+{
+    "specification" : {
+        "version": "1.0.0"
+    },
+
+    "inputs": {
+        "input": {
+            "sample": "sample_id",
+            "organism": "organism_name",
+            "assembly": "assembly_fasta",
+        }
+    }
+}
+```
+
+#### 1.3.2.1. Specification section
+
+The `specification` section defines information about the IRIDA Next specification. Here, the only key available is the version (included so that this file can be expanded later).
+
+```json
+{
+    "specification" : {
+        "version": "1.0.0"
+    }
+}
+```
+
+#### 1.3.2.2. Inputs section
+
+The `inputs` section defines how to map column names in the input CSV file to specific types of data in IRIDA Next.
+
+```json
+{
+    "inputs": {
+        "input": {
+            "sample": "sample_id",
+            "fastq_1": "illumina_fastq_1",
+            "fastq_2": "illumina_fastq_2",
+            "nanopore": "nanopore_fastq",
+            "assembly": "assembly_fasta",
+        }
+    }
+}
+```
+
+Here, only one type of key is available, `input`, which corresponds to the `--input` CSV file. This consists of key-value pairs that define data to select, in the form of `"[SAMPLESHEET COLUMN NAME]": "[IRIDA NEXT DATA]"`.
+
+The `"[SAMPLESHEET COLUMN NAME]"`
 
 # 2. Resource requirements
 
