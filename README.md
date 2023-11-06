@@ -6,7 +6,11 @@ This document describes the specification for developing IRIDA Next Nextflow pip
 
 # 1. Input
 
-Input for pipelines follows the [nfcore parameters][nfcore-parameters] specification. In particular, input will be passed via a CSV file listing samples and reads (using `--input`).
+Input for pipelines follows the [nfcore parameters][nfcore-parameters] specification. In particular, input data will be passed via a CSV file, where each row represents data that can be processed independently through the pipeline (commonly a sample). The input CSV file is passed using the `--input` parameter to a pipeline (e.g., `--input samples.csv`).
+
+Within Nextflow, this `--input samples.csv` file is converted into a channel where each element within the channel corresponds to a single row of the input CSV file (e.g., each element in the channel contains the sample identifier and the input fastq files). This conversion from the input CSV file to a channel of tuples is performed using the [nf-validation fromSamplesheet][] function.
+
+*Note: Commonly this `--input` CSV file is referred to as a samplesheet since it's often used to store data associated with a single sample, but it could be used to store other types of data as well.*
 
 ## 1.1. Default samplesheet
 
@@ -16,9 +20,62 @@ The default samplesheet looks like:
 |---------|--------------|--------------|
 | SampleA | file_1.fq.gz | file_2.fq.gz |
 
-## 1.2. Modify samplesheet
+## 1.2. Types of input data
 
-In order to modify the samplesheet structure, please follow the [nf-validation samplesheet schema specification][nf-validation samplesheet]. This involves modifying the `assets/schema_input.json` JSON schema defining the expected fields (columns) in a samplesheet and configuring your pipeline to use [nf-validation fromSamplesheet][nf-validation fromsamplesheet] to create a channel of input data for your pipeline.
+There are two types of input data: **files** and **simple**.
+
+### 1.2.1. Input files
+
+An input file consists of some data stored within a file external to the CSV file passed to `--input`. Commonly this would be sequence reads (and would be indicated with the `fastq_1` and `fastq_2` columns in the CSV file above). However, this could be any data intended to be delivered to pipeline steps via a channel (e.g., `bam` files of aligned reads, `fasta` files of assembled genomes, `csv` files of allelic profiles).
+
+#### 1.2.1.1. Example sample input files
+
+| sample  | fastq_1 **(an input file)** | fastq_2 **(another input file)** | assembly **(another input file)** |
+|---------|--------------|--------------|----|
+| SampleA | file_1.fq.gz | file_2.fq.gz | |
+| SampleB | | | assembly.fa.gz |
+
+#### 1.2.1.2. Example allelic profile input files
+
+| profile_id | scheme    | alleles **(input file)** |
+|------------|-----------|--------------------------|
+| ProfilesA  | senterica | alleles.tsv.gz           |
+
+### 1.2.2. Simple input types
+
+A simple input type is something that can be represented within a cell in a CSV file without reference to some external file (e.g., a Number or a String). In integration with IRIDA Next, these will often be derived from contextual metadata of a sample (e.g., Organism) or will be the sample identifier.
+
+#### 1.2.2.1. Example simple input types
+
+| sample **(simple input)**  | organism **(simple input)** | fastq_1      | fastq_2      |
+|----------------------------|-----------------------------|--------------|--------------|
+| SampleA                    | Salmonella enterica         | file_1.fq.gz | file_2.fq.gz |
+
+## 1.3. Modify samplesheet
+
+In order to modify the samplesheet structure there are two main tasks to complete.
+
+### 1.3.1. Update samplesheet schema specification
+
+The [nf-validation samplesheet schema specification][nf-validation samplesheet] defines the structure of the input samplesheet for a pipeline. This consists of a JSON schema file and can be modified to add different columns to the samplesheet for different types of input. This file also accepts the definition of rules for validating the data passed within the samplesheet (e.g., if a column requires only numeric data, this can be defined within the JSON schema).
+
+By default, the samplesheet schema assumes you have three input columns: `sample`, `fastq_1`, and `fastq_2`. Single-end data is handled by leaving `fastq_2` blank.
+
+For custom types of data for a pipeline, please modify this JSON schema by modifying the `assets/schema_input.json` file. Also, make sure your pipeline is configured to use [nf-validation fromSamplesheet][nf-validation fromsamplesheet] to create a channel of input data for your pipeline from an input CSV file that follows this JSON schema.
+
+#### 1.3.1.1. Select column names from IRIDA Next keywords
+
+In order to select data from IRIDA Next, please use one of the following keywords as column names in the `--input` CSV file.
+
+* **sample**: The IRIDA Next sample identifier.
+* **fastq_1**: The first of paired-end Illumina fastq files (or a single-end Illumina fastq file).
+* **fastq_2**: The second of paired-end Illumina fastq files (leave empty if using single-end data).
+* **nanopore**: The nanopore reads fastq file.
+* **assembly_fasta**: The assembled genome (in FASTA format).
+* **allele_profiles**: A file consisting of the allelic profiles of selected samples for cg/wgMLST nomenclature/clustering.
+* **scheme_name**: The MLST scheme name for cg/wgMLST nomenclature/clustering.
+
+For an idea of a more advanced method of selecting data from IRIDA Next, please see [IRIDA Next samplesheet ideas documentation][iridanext-samplesheet].
 
 # 2. Resource requirements
 
@@ -222,3 +279,4 @@ specific language governing permissions and limitations under the License.
 [nf-core-outside-nf-core]: https://nf-co.re/docs/contributing/tutorials/unofficial_pipelines
 [nf-validation samplesheet]: https://nextflow-io.github.io/nf-validation/nextflow_schema/sample_sheet_schema_specification/
 [nf-validation fromSamplesheet]: https://nextflow-io.github.io/nf-validation/samplesheets/fromSamplesheet/
+[iridanext-samplesheet]: iridanext-samplesheet.md
