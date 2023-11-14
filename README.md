@@ -2,7 +2,7 @@
 
 *This document is in-progress and should be considered as a **DRAFT** that is subject to change at any time.*
 
-This document describes the specification for developing IRIDA Next Nextflow pipelines. This follows many of the recommendations from the [nfcore pipeline schema][nfcore-pipeline-schema].
+This document describes the specification for developing [IRIDA Next][irida-next] Nextflow pipelines. This follows many of the recommendations from the [nfcore pipeline schema][nfcore-pipeline-schema].
 
 # 1. Input
 
@@ -70,12 +70,26 @@ In order to select data from IRIDA Next, please use one of the following keyword
 * **sample**: The IRIDA Next sample identifier.
 * **fastq_1**: The first of paired-end Illumina fastq files (or a single-end Illumina fastq file).
 * **fastq_2**: The second of paired-end Illumina fastq files (leave empty if using single-end data).
-* **nanopore**: The nanopore reads fastq file.
 * **assembly_fasta**: The assembled genome (in FASTA format).
-* **allele_profiles**: A file consisting of the allelic profiles of selected samples for cg/wgMLST nomenclature/clustering.
-* **scheme_name**: The MLST scheme name for cg/wgMLST nomenclature/clustering.
 
 For an idea of a more advanced method of selecting data from IRIDA Next, please see [IRIDA Next samplesheet ideas documentation][iridanext-samplesheet].
+
+# 2. Parameters
+
+Parameters within a pipeline are defined in the `nextflow.config` file (under the `params` scope), and then the `nextflow_schema.json` file is updated to contain the parameters by running `nf-core schema build`. This is described in the [nf-core contributing to pipelines][nf-core-contributing-to-pipelines] documentation.
+
+As an example, the following is a subset of parameters from the [iridanext-example-nf][] pipeline.
+
+```
+params {
+    input                      = null
+    genome                     = 'hg38'
+    igenomes_base              = 's3://ngi-igenomes/igenomes'
+    igenomes_ignore            = false
+}
+```
+
+The full set of parameters can be found in <https://github.com/phac-nml/iridanext-example-nf/blob/main/nextflow.config>.
 
 # 3. Output
 
@@ -208,9 +222,33 @@ The below is the equivalent simplified JSON from the version defined in [3.2.2. 
 }
 ```
 
-# 4. Executing pipelines
+# 4. Modules
 
-Pipelines will be executed via the [GA4GH Workflow Execution Service][ga4gh-wes] API.
+[Modules in Nextflow][nextflow-modules] are scripts that can contain functions, processes, or workflows.
+
+## 4.1. nf-core modules
+
+Nf-core contains a number of modules for processes to execute different bioinformatics tools ([nf-core modules][]). Where possible, please use nf-core modules within your pipeline. These can be installed vi running the following command from the [nf-core tools][nf-core-modules-install].
+
+```bash
+nf-core modules install [NAME]
+```
+
+## 4.2. Local modules
+
+If it is not possible to use existing nf-core modules, you can create your own modules local to your pipeline in the `modules/local/` directory. Please see the [nf-core contributing modules][] documentation for expectations on how modules should behave. Local modules won't need to follow all of these guidelines (such as uploading to the list of nf-core approved modules), but the behaviour of inputs, parameters, and outputs of a process should be followed as closely as possible.
+
+### 4.2.1. Module software requirements
+
+Each module should define its software requirements as a docker/singularity container. This requires using the `container` keyword in the process. For example:
+
+```
+container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+    'https://depot.galaxyproject.org/singularity/fastqc:0.11.9--0' :
+    'biocontainers/fastqc:0.11.9--0' }"
+```
+
+For more information, see the [Nextflow containers][] documentation and the [nf-core modules software requierments][] guide.
 
 # 5. Resource requirements
 
@@ -245,13 +283,63 @@ The following labels will be accepted:
 
 The system administrator is responsible for maintaining a mapping between the `label` and the specific resources required by a pipeline.
 
-# 6. Other resources
+# 6. Testing
+
+Nextflow pipelines should include test suites, linting, and execution of these tests automatically on merging of new code (i.e., continuous integration). These files should be included automatically if the pipeline is generated using the [nf-core create][nf-core-create] command. A description of these different tests are included in the [nf-core contributing][nf-core-contributing-github-actions] documentation.
+
+## 6.1. Nextflow test profile
+
+In particular, a `test` profile should be setup in Nextflow so that the pipeline can be executed with `nextflow [NAME] -profile test,docker`.
+
+Parameters for the `test` profile should be specified in the `conf/test.config` file. This can reference data stored elsewhere (e.g., on GitHub). For example, see the `test.config` for the IRIDA Next sample pipeline <https://github.com/phac-nml/iridanext-example-nf/blob/main/conf/test.config>.
+
+# 7. Executing pipelines
+
+## 7.1. Standalone execution
+
+Pipelines should be configured so that they can be executed by:
+
+```bash
+nextflow run [NAME] --input inputsheet.csv --outdir output [OTHER PARAMETERS]
+```
+
+Where `inputsheet.csv` is the CSV file containing samples (or other input data) and `output` is the directory containing output data. Other parameters can be included, though reasonable defaults should be set so the number of required parameters is as minimal as possible.
+
+## 7.2. Execution via GA4GE WES
+
+[IRIDA Next][irida-next] will make use of the [GA4GH Workflow Execution Service][ga4gh-wes] API for executing pipelines. This will require making a `POST` request to **RunWorkflow** with JSON that looks similar to the following:
+
+```json
+{
+    "workflow_params": {
+        "--input": "https://url-to-input.csv",
+        "-r": "REVISION",
+        "[PARAMETERS]": "[PARAMETER VALUES]"
+    },
+    "workflow_type": "DSL2",
+    "workflow_type_version": "22.10.7",
+    "tags": {
+        "createdBy": "Test",
+        "group": "Test"
+    },
+    "workflow_engine_parameters": {
+        "engine": "nextflow",
+        "execute_loc": "azure"
+    },
+    "workflow_url": "https://github.com/phac-nml/iridanext-example-nf",
+    "workflow_attachment": ""
+}
+```
+
+Here, parameters are specified by key/value pairs under `workflow_params` and the location of the workflow code is given in `workflow_url`. See [WES RunWorkflow][wes-run-workflow] for more details.
+
+# 8. Other resources
 
 * [nfcore pipeline schema][nfcore-pipeline-schema]
 * [nfcore parameters][nfcore-parameters]
 * [GA4GH Workflow Execution Service][ga4gh-wes]
 
-# 7. Publishing guidelines
+# 9. Publishing guidelines
 
 Our intention is to follow, as much as possible, the standards and practices set out by nf-core. However, we leave it as optional to actually publish pipelines/modules/subworkflows with the official nf-core repositories. We would encourage this where it makes sense in order to support re-use and giving back to the community (please refer to the [nf-core publishing requirements][] for the guidelines in this case). However, it is perfectly acceptible to publish pipelines/modules/subworkflows in separate Git repositories outside of nf-core. Please see the [if the guidelines don't fit][nf-core-external-development] and [using nf-core components outside of nf-core][nf-core-outside-nf-core] sections of the nf-core documentation for more information on this scenario and other locations to list your pipeline.
 
@@ -271,8 +359,20 @@ CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 
 [nfcore-pipeline-schema]: https://nf-co.re/tools/#pipeline-schema
+[irida-next]: https://github.com/phac-nml/irida-next
 [nf-core]: https://nf-co.re/
+[nf-core-create]: https://nf-co.re/tools#creating-a-new-pipeline
+[nf-core-contributing-to-pipelines]: https://nf-co.re/docs/contributing/contributing_to_pipelines#default-values
+[wes-run-workflow]: https://ga4gh.github.io/workflow-execution-service-schemas/docs/#tag/Workflow-Runs/operation/RunWorkflow
+[nf-core-modules-install]: https://nf-co.re/tools#install-modules-in-a-pipeline
+[nf-core modules]: https://nf-co.re/modules
+[nf-core modules software requirements]: https://nf-co.re/docs/contributing/modules#software-requirements
+[Nextflow containers]: https://www.nextflow.io/docs/latest/container.html
+[nextflow-modules]: https://www.nextflow.io/docs/latest/module.html
+[iridanext-example-nf]: https://github.com/phac-nml/iridanext-example-nf
 [nfcore-parameters]: https://nf-co.re/docs/contributing/guidelines/requirements/parameters
+[nf-core-contributing-github-actions]: https://nf-co.re/docs/contributing/tutorials/nf_core_contributing_overview#github-actions-workflows
+[nf-core-contributing-modules]: https://nf-co.re/docs/contributing/modules
 [ga4gh-wes]: https://ga4gh.github.io/workflow-execution-service-schemas/docs/
 [nf-core publishing requirements]: https://nf-co.re/docs/contributing/guidelines#requirements
 [nf-core-external-development]: https://nf-co.re/docs/contributing/guidelines#if-the-guidelines-dont-fit
