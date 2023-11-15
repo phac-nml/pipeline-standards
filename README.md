@@ -241,7 +241,7 @@ The `samples` metadata object consists of keys corresponding to sample identifie
 
 The simplified metadata JSON consists of only a single level of key-value pairs under each `sample` in the metadata object. This will be used to simplify integration of metadata with IRIDA Next prior to support for more complicated data structures.
 
-The below is the equivalent simplified JSON from the version defined in [3.2.2. Metadata](#322-metadata).
+The below is the equivalent simplified JSON from the version defined in [3.2.4. Metadata](#324-metadata).
 
 ```json
 "metadata": {
