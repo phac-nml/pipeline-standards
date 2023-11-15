@@ -4,6 +4,45 @@
 
 This document describes the specification for developing [IRIDA Next][irida-next] Nextflow pipelines. This follows many of the recommendations from the [nfcore pipeline schema][nfcore-pipeline-schema].
 
+- [1. Input](#1-input)
+  * [1.1. Default samplesheet](#11-default-samplesheet)
+  * [1.2. Types of input data](#12-types-of-input-data)
+    + [1.2.1. Input files](#121-input-files)
+      - [1.2.1.1. Example sample input files](#1211-example-sample-input-files)
+      - [1.2.1.2. Example allelic profile input files](#1212-example-allelic-profile-input-files)
+    + [1.2.2. Simple input types](#122-simple-input-types)
+      - [1.2.2.1. Example simple input types](#1221-example-simple-input-types)
+  * [1.3. Modify samplesheet](#13-modify-samplesheet)
+    + [1.3.1. Update samplesheet schema specification](#131-update-samplesheet-schema-specification)
+      - [1.3.1.1. Select column names from IRIDA Next keywords](#1311-select-column-names-from-irida-next-keywords)
+- [2. Parameters](#2-parameters)
+- [3. Output](#3-output)
+  * [3.1. Files](#31-files)
+  * [3.2. IRIDA Next JSON](#32-irida-next-json)
+    + [3.2.1. Minimal example](#321-minimal-example)
+    + [3.2.2. Complete example](#322-complete-example)
+    + [3.2.3. Output files](#323-output-files)
+      - [3.2.3.1. global](#3231-global)
+      - [3.2.3.2. samples](#3232-samples)
+    + [3.2.4. Metadata](#324-metadata)
+      - [3.2.4.1. Simplified metadata JSON](#3241-simplified-metadata-json)
+- [4. Modules](#4-modules)
+  * [4.1. nf-core modules](#41-nf-core-modules)
+  * [4.2. Local modules](#42-local-modules)
+    + [4.2.1. Module software requirements](#421-module-software-requirements)
+- [5. Resource requirements](#5-resource-requirements)
+  * [5.1. Process resource label](#51-process-resource-label)
+    + [5.1.1. Accepted resource labels](#511-accepted-resource-labels)
+  * [5.2. Tuning resource limits with parameters](#52-tuning-resource-limits-with-parameters)
+- [6. Testing](#6-testing)
+  * [6.1. Nextflow test profile](#61-nextflow-test-profile)
+- [7. Executing pipelines](#7-executing-pipelines)
+  * [7.1. Standalone execution](#71-standalone-execution)
+  * [7.2. Execution via GA4GE WES](#72-execution-via-ga4ge-wes)
+- [8. Other resources](#8-other-resources)
+- [9. Publishing guidelines](#9-publishing-guidelines)
+- [10. Legal](#10-legal)
+
 # 1. Input
 
 Input for pipelines follows the [nfcore parameters][nfcore-parameters] specification. In particular, input data will be passed via a CSV file, where each row represents data that can be processed independently through the pipeline (commonly a sample). The input CSV file is passed using the `--input` parameter to a pipeline (e.g., `--input samples.csv`).
@@ -236,7 +275,7 @@ nf-core modules install [NAME]
 
 ## 4.2. Local modules
 
-If it is not possible to use existing nf-core modules, you can create your own modules local to your pipeline in the `modules/local/` directory. Please see the [nf-core contributing modules][] documentation for expectations on how modules should behave. Local modules won't need to follow all of these guidelines (such as uploading to the list of nf-core approved modules), but the behaviour of inputs, parameters, and outputs of a process should be followed as closely as possible.
+If it is not possible to use existing nf-core modules, you can create your own modules local to your pipeline in the `modules/local/` directory. Please see the [nf-core contributing modules][nf-core-contributing-modules] documentation for expectations on how modules should behave. Local modules won't need to follow all of these guidelines (such as uploading to the list of nf-core approved modules), but the behaviour of inputs, parameters, and outputs of a process should be followed as closely as possible.
 
 ### 4.2.1. Module software requirements
 
@@ -248,16 +287,13 @@ container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity
     'biocontainers/fastqc:0.11.9--0' }"
 ```
 
-For more information, see the [Nextflow containers][] documentation and the [nf-core modules software requierments][] guide.
+For more information, see the [Nextflow containers][] documentation and the [nf-core modules software requirements][] guide.
 
 # 5. Resource requirements
 
-To define computational resource requirements for each process, we will follow the [nf-core][] standards as much as possible, where resources are adjusted by a `label` in each `process` of a pipeline. Defining these resources will be divided into these two roles:
+To define computational resource requirements for each process, we will follow the [nf-core resource][nf-core-module-resource] standards as much as possible, where resources are adjusted by a `label` in each `process` of a pipeline. The pipeline developer will be responsible for setting an appropriate `label` in each process of the NextFlow pipeline to appropriatly define required resources. In addition, the developer is responsible for tuning any resources defined in the `config/base.config` file, as described in the [nf-core tuning workflow resources][] documentation.
 
-* **Pipeline developer**: Responsible for setting an appropriate `label` in each process of the NextFlow pipeline to appropriatly define required resources.
-* **System administrator**: Responsible for defining and maintaining the mapping between a `label` and the specific resources required by a pipeline.
-
-## 5.1. Pipeline developer
+## 5.1. Process resource label
 
 The pipeline developer will add a `label` to each `process` of a NextFlow pipeline to adjust resources. For example:
 
@@ -277,11 +313,11 @@ The following labels will be accepted:
 * `process_low`
 * `process_medium`
 * `process_high`
-* `process_very_high`: An addition over those provided by nf-core.
+* `process_very_high`: This label is an addition over those provided by nf-core to be used for situations where a process needs a lot of resources beyond `process_high`.
 
-## 5.2. System administrator
+## 5.2. Tuning resource limits with parameters
 
-The system administrator is responsible for maintaining a mapping between the `label` and the specific resources required by a pipeline.
+Nf-core provides the capability to adjust the maximum resources given to processes in a pipeline using parameters: `--max_cpus`, `--max_memory`, and `--max_time`. Pipeline developers will be responsible for making sure thse parameters are available in the `nextflow.config` file. See the [nf-core max resources][] documentation for more details.
 
 # 6. Testing
 
@@ -343,7 +379,7 @@ Here, parameters are specified by key/value pairs under `workflow_params` and th
 
 Our intention is to follow, as much as possible, the standards and practices set out by nf-core. However, we leave it as optional to actually publish pipelines/modules/subworkflows with the official nf-core repositories. We would encourage this where it makes sense in order to support re-use and giving back to the community (please refer to the [nf-core publishing requirements][] for the guidelines in this case). However, it is perfectly acceptible to publish pipelines/modules/subworkflows in separate Git repositories outside of nf-core. Please see the [if the guidelines don't fit][nf-core-external-development] and [using nf-core components outside of nf-core][nf-core-outside-nf-core] sections of the nf-core documentation for more information on this scenario and other locations to list your pipeline.
 
-# Legal
+# 10. Legal
 
 Copyright 2023 Government of Canada
 
@@ -366,12 +402,15 @@ specific language governing permissions and limitations under the License.
 [wes-run-workflow]: https://ga4gh.github.io/workflow-execution-service-schemas/docs/#tag/Workflow-Runs/operation/RunWorkflow
 [nf-core-modules-install]: https://nf-co.re/tools#install-modules-in-a-pipeline
 [nf-core modules]: https://nf-co.re/modules
+[nf-core-module-resource]: https://nf-co.re/docs/contributing/modules#resource-requirements
 [nf-core modules software requirements]: https://nf-co.re/docs/contributing/modules#software-requirements
 [Nextflow containers]: https://www.nextflow.io/docs/latest/container.html
 [nextflow-modules]: https://www.nextflow.io/docs/latest/module.html
 [iridanext-example-nf]: https://github.com/phac-nml/iridanext-example-nf
 [nfcore-parameters]: https://nf-co.re/docs/contributing/guidelines/requirements/parameters
 [nf-core-contributing-github-actions]: https://nf-co.re/docs/contributing/tutorials/nf_core_contributing_overview#github-actions-workflows
+[nf-core max resources]: https://nf-co.re/docs/usage/configuration#max-resources
+[nf-core tuning workflow resources]: https://nf-co.re/docs/usage/configuration#tuning-workflow-resources
 [nf-core-contributing-modules]: https://nf-co.re/docs/contributing/modules
 [ga4gh-wes]: https://ga4gh.github.io/workflow-execution-service-schemas/docs/
 [nf-core publishing requirements]: https://nf-co.re/docs/contributing/guidelines#requirements
