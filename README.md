@@ -4,8 +4,6 @@
 
 This document describes the specification for developing [IRIDA Next][irida-next] Nextflow pipelines. This follows many of the recommendations from the [nfcore pipeline schema][nfcore-pipeline-schema].
 
-A tutorial on developing a pipeline available at [IRIDA Next nf-core pipeline tutorial][pipeline-tutorial].
-
 - [1. Input](#1-input)
   * [1.1. Default samplesheet](#11-default-samplesheet)
   * [1.2. Types of input data](#12-types-of-input-data)
@@ -371,7 +369,19 @@ Where `inputsheet.csv` is the CSV file containing samples (or other input data) 
 
 Here, parameters are specified by key/value pairs under `workflow_params` and the location of the workflow code is given in `workflow_url`. See [WES RunWorkflow][wes-run-workflow] for more details.
 
-# 8. Other resources
+# 8. Resources
+
+## 8.1. Pipeline development tutorial
+
+A tutorial on developing a pipeline is available at [IRIDA Next nf-core pipeline tutorial][pipeline-tutorial].
+
+## 8.2. List of pipelines
+
+An example pipeline that conforms to these standards is available at <https://github.com/phac-nml/iridanext-example-nf>.
+
+Other pipelines are listed at <https://github.com/phac-nml/nf-pipelines>.
+
+## 8.3. Other resources
 
 * [nfcore pipeline schema][nfcore-pipeline-schema]
 * [nfcore parameters][nfcore-parameters]
