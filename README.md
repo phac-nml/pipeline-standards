@@ -60,7 +60,7 @@ While we do follow nf-core as closely as possible, there are a number of differe
 
 ## 1.1. Developing a pipeline to contribute to nf-core
 
-If you intend to develop a pipeline to contribute to nf-core, please follow all the [nf-core requirements][] in addition to the requirements listed in this guide.
+If you intend to develop a pipeline to contribute to nf-core, please follow all the [nf-core requirements][nf-core-requirements] in addition to the requirements listed in this guide.
 
 ## 1.2. Developing a pipeline which won't be contributed to nf-core
 
