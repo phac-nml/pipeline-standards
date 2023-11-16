@@ -66,24 +66,24 @@ If you intend to develop a pipeline to contribute to nf-core, please follow all 
 
 If, instead, the pipeline won't be contributed to nf-core, then the only following set of [nf-core requirements][nf-core-requirements] would need to be followed in addition to the [if the guidelines don't fit][nf-core-external-development] section of the nf-core guidelines, [using nf-core components outside of nf-core][nf-core-outside-nf-core] section, and the below IRIDA Next requirements sections.
 
-* **Nextflow: Workflows must be built using Nextflow.**
+* [ ] **Nextflow: Workflows must be built using Nextflow.**
 * Identity and branding: Primary development must on the nf-core organisation.
 * Workflow specificity: There should only be a single pipeline per data / analysis type.
-* **Workflow size: Not too big, not too small.**
-* **Workflow name: Names should be lower case and without punctuation.**
-* **Use the template: All nf-core pipelines must be built using the nf-core template.**
-* **Software license: Pipelines must open source, released with the MIT license.**
+* [ ] **Workflow size: Not too big, not too small.**
+* [ ] **Workflow name: Names should be lower case and without punctuation.**
+* [ ] **Use the template: All nf-core pipelines must be built using the nf-core template.**
+* [ ] **Software license: Pipelines must open source, released with the MIT license.**
 * Bundled documentation: Pipeline documentation must be hosted on the nf-core website.
-* **Docker support: Software must be bundled using Docker and versioned.**
-* **Continuous integration testing: Pipelines must run CI tests.**
-* **Semantic versioning: Pipelines must use stable release tags.**
-* **Standardised parameters: Strive to have standardised usage.**
-* **Single command: Pipelines should run in a single command.**
-* **Keywords: Excellent documentation and GitHub repository keywords.**
-* **Pass lint tests: The pipeline must not have any failures in the nf-core lint tests.**
-* **Credits and Acknowledgements: Pipelines must properly acknowledge prior work.**
-* **Minimum inputs: Pipelines should be able to run with as little input as possible.**
-* *Use nf-core git branches: Use master, dev and TEMPLATE.*
+* [ ] **Docker support: Software must be bundled using Docker and versioned.**
+* [ ] **Continuous integration testing: Pipelines must run CI tests.**
+* [ ] **Semantic versioning: Pipelines must use stable release tags.**
+* [ ] **Standardised parameters: Strive to have standardised usage.**
+* [ ] **Single command: Pipelines should run in a single command.**
+* [ ] **Keywords: Excellent documentation and GitHub repository keywords.**
+* [ ] **Pass lint tests: The pipeline must not have any failures in the nf-core lint tests.**
+* [ ] **Credits and Acknowledgements: Pipelines must properly acknowledge prior work.**
+* [ ] **Minimum inputs: Pipelines should be able to run with as little input as possible.**
+* [ ] *Use nf-core git branches: Use master, dev and TEMPLATE.*
    * *Please use `main` instead of `master`.*
 
 # 2. Input
