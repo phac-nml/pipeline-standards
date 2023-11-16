@@ -4,6 +4,8 @@
 
 This document describes the specification for developing [IRIDA Next][irida-next] Nextflow pipelines. This follows many of the recommendations from the [nfcore pipeline schema][nfcore-pipeline-schema].
 
+A tutorial on developing a pipeline available at [IRIDA Next nf-core pipeline tutorial][pipeline-tutorial].
+
 - [1. Input](#1-input)
   * [1.1. Default samplesheet](#11-default-samplesheet)
   * [1.2. Types of input data](#12-types-of-input-data)
@@ -419,3 +421,4 @@ specific language governing permissions and limitations under the License.
 [nf-validation samplesheet]: https://nextflow-io.github.io/nf-validation/nextflow_schema/sample_sheet_schema_specification/
 [nf-validation fromSamplesheet]: https://nextflow-io.github.io/nf-validation/samplesheets/fromSamplesheet/
 [iridanext-samplesheet]: iridanext-samplesheet.md
+[pipeline-tutorial]: https://github.com/apetkau/nf-core-assemblyexample
