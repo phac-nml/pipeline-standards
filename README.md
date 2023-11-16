@@ -39,7 +39,10 @@ This document describes the specification for developing [IRIDA Next][irida-next
 - [7. Executing pipelines](#7-executing-pipelines)
   * [7.1. Standalone execution](#71-standalone-execution)
   * [7.2. Execution via GA4GE WES](#72-execution-via-ga4ge-wes)
-- [8. Other resources](#8-other-resources)
+- [8. Resources](#8-resources)
+  * [8.1. Pipeline development tutorial](#81-pipeline-development-tutorial)
+  * [8.2. List of pipelines](#82-list-of-pipelines)
+  * [8.3. Other resources](#83-other-resources)
 - [9. Publishing guidelines](#9-publishing-guidelines)
 - [10. Legal](#10-legal)
 
