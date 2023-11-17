@@ -76,8 +76,8 @@ If, instead, the pipeline won't be contributed to nf-core, then the only followi
 * [ ] [Software license](https://nf-co.re/docs/contributing/guidelines/requirements/mit_license): Pipelines must open source, released with the MIT license.
 * [ ] [Docker support](https://nf-co.re/docs/contributing/guidelines/requirements/docker): Software must be bundled using Docker and versioned.
 * [ ] [Continuous integration testing](https://nf-co.re/docs/contributing/guidelines/requirements/ci_testing): Pipelines must run CI tests.
-* [ ] [Semantic versioning](https://nf-co.re/docs/contributing/guidelines/requirements/ci_testing): Pipelines must use stable release tags.
-* [ ] [Standardised parameters](https://nf-co.re/docs/contributing/guidelines/requirements/ci_testing): Strive to have standardised usage.
+* [ ] [Semantic versioning](https://nf-co.re/docs/contributing/guidelines/requirements/semantic_versioning): Pipelines must use stable release tags.
+* [ ] [Standardised parameters](https://nf-co.re/docs/contributing/guidelines/requirements/semantic_versioning): Strive to have standardised usage.
 * [ ] [Single command](https://nf-co.re/docs/contributing/guidelines/requirements/single_command): Pipelines should run in a single command.
 * [ ] [Keywords](https://nf-co.re/docs/contributing/guidelines/requirements/single_command): Excellent documentation and GitHub repository keywords.
 * [ ] [Pass lint tests](https://nf-co.re/docs/contributing/guidelines/requirements/single_command): The pipeline must not have any failures in the nf-core lint tests.
