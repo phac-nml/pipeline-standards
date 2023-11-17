@@ -69,3 +69,26 @@ The `"[SAMPLESHEET COLUMN NAME]"` defines the name of the column in the samplesh
 | SampleA | file_1.fq.gz | file_2.fq.gz |
 
 The `"[IRIDA NEXT DATA]"` defines a keyword used to select data from IRIDA Next.
+
+# 2. IRIDA Next Nextflow plugin
+
+In the future, it might be useful to try to move a lot of the IRIDA Next requirements into an `nf-iridanext` [plugin for Nextflow][nextflow-plugin]. These IRIDA Next requirement include specific methods to define input data and outputs (as spelled out in the [Requirements for integrating with IRIDA Next][iridanext-requirements] section). With an IRIDA Next-specific plugin, some of this configuration for integreating pipelines with IRIDA Next could be defined in configuration files. For example:
+
+```
+iridanext {
+    input_mapping {
+        // Maps columns in samplesheet to keywords for selecting data from IRIDA Next
+        fastq_1 = "illumina-fastq-1"
+        fastq_2 = "illumina-fastq-2"
+        organism = "organism_id"
+    }
+    // Defines name of file IRIDA Next expects
+    iridanext_file = "iridanext.output.json.gz"
+    language_files_prefix = "messages"
+}
+```
+
+These configurations could be done independently of pipeline code (e.g., to register a pipeline with IRIDA Next you provide the code repository of a pipeline plus additional IRIDA Next plugin configuration). This could provide a way to minimize the number of changes needed to code for integrating pipelines from nf-core (by consolidating all changes into a separate configuration file specific for IRIDA Next integration).
+
+[nextflow-plugin]: https://www.nextflow.io/docs/latest/plugins.html
+[iridanext-requirements]: README.md#13-requirements-for-integrating-with-irida-next
