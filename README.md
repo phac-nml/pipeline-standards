@@ -8,7 +8,7 @@ This document describes the specification for developing [IRIDA Next][irida-next
   * [1.1. Developing a pipeline to contribute to nf-core](#11-developing-a-pipeline-to-contribute-to-nf-core)
   * [1.2. Developing a pipeline which won't be contributed to nf-core](#12-developing-a-pipeline-which-wont-be-contributed-to-nf-core)
     + [1.2.1. Requirements from nf-core](#121-requirements-from-nf-core)
-    + [1.2.2. Requirements for integrating with IRIDA Next](#122-requirements-for-integrating-with-irida-next)
+  * [1.3. Requirements for integrating with IRIDA Next](#13-requirements-for-integrating-with-irida-next)
 - [2. Input](#2-input)
   * [2.1. Default samplesheet](#21-default-samplesheet)
   * [2.2. Types of input data](#22-types-of-input-data)
@@ -87,9 +87,9 @@ If, instead, the pipeline won't be contributed to nf-core, then the only followi
 * [ ] *[Use nf-core git branches](https://nf-co.re/docs/contributing/guidelines/requirements/git_branches): Use master, dev and TEMPLATE.*
    * *Note: Please use `main` instead of `master`.*
 
-### 1.2.2. Requirements for integrating with IRIDA Next
+## 1.3. Requirements for integrating with IRIDA Next
 
-The following is requirements for integrating a pipeline with IRIDA Next. These may overlap with existing nf-core and Nextflow standards.
+Whether the pipeline you develop is intended to be contributed to nf-core or not, the following are additional requirements for integrating a pipeline with IRIDA Next. These may overlap with existing nf-core and Nextflow standards.
 
 * [ ] [Input data using samplesheet and schema](#input): Please use a CSV samplesheet for referencing input data, where the structure of the CSV file is described in an `assets/schema_input.json` file. The JSON schema file will be used to render an interface in IRIDA Next for selecting and sending input data to be executed by a pipeline.
 * [ ] [Parameters described in nextflow.config and nextflow_schema.json](#parameters): Please describe parameters for the pipeline in the `nextflow.config` and `nextflow_schema.json` file. The JSON schema file will be used by IRIDA Next to render an interface for selecting parameters to pass to the pipeline.
