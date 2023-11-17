@@ -85,8 +85,10 @@ If, instead, the pipeline won't be contributed to nf-core, then the only followi
     * *Note: It is possible to ignore some of the default nf-core linting with a [lint configuration file](https://nf-co.re/tools#linting-config).*
 * [ ] [Credits and Acknowledgements](https://nf-co.re/docs/contributing/guidelines/requirements/acknowledgements): Pipelines must properly acknowledge prior work.
 * [ ] [Minimum inputs](https://nf-co.re/docs/contributing/guidelines/requirements/minimum_inputs): Pipelines should be able to run with as little input as possible.
-* [ ] *[Use nf-core git branches](https://nf-co.re/docs/contributing/guidelines/requirements/git_branches): Use master, dev and TEMPLATE.*
-   * *Note: Please use `main` instead of `master`.*
+
+ The following are modified nf-core requirements:
+ * [ ] [Bundled documentation](https://nf-co.re/docs/contributing/guidelines/requirements/docs): Pipeline documentation should be provided within the `README.md`, `docs/usage.md` and `docs/output.md` files. Note that documentation does not need to be hosted on the nf-core website (unless the pipeline is meant to be contributed to nf-core).
+ * [ ] [Use nf-core git branches](https://nf-co.re/docs/contributing/guidelines/requirements/git_branches): Use `main` (instead of `master`), `dev` and `TEMPLATE`.
      
  The following are additional requirements for [using nf-core components outside of nf-core][nf-core-outside-nf-core].
  * [ ] [Acknowledging nf-core](https://nf-co.re/docs/contributing/tutorials/unofficial_pipelines#acknowledging-nf-core): Please add an acknowledgement statement to the pipeline `README.md` for nf-core.
@@ -100,6 +102,16 @@ Whether the pipeline you develop is intended to be contributed to nf-core or not
 * [ ] [Parameters described in nextflow.config and nextflow_schema.json](#parameters): Please describe parameters for the pipeline in the `nextflow.config` and `nextflow_schema.json` file. The JSON schema file will be used by IRIDA Next to render an interface for selecting parameters to pass to the pipeline.
 * [ ] [Output a JSON file describing data to load into IRIDA Next](#output): Please write an `output/iridanext.output.json.gz` file which describes the data to be loaded and stored within IRIDA Next (both files and metadata).
 * [ ] [Describe resource requirements for each module](#resource-requirements): Please describe resource requirements using only the labels described in the above link.
+
+## 1.4. Other requirements
+
+The following are other requirements for developing pipelines.
+
+* [ ] [Software security and vulnerabilities](https://github.com/pha4ge/pipeline-resources/blob/main/docs/pipeline-standards.md#software-security-and-vulnerabilities): Please maintain good software security practices with pipeline code to be published. See the [PHA4GE pipeline guidelines][pha4ge-pipeline-security] for more details. In particular:
+    * [ ] Never storing plain text passwords, API keys, ssh keys, or otherwise confidential information in software/pipelines which are distributed publicly
+    * [ ] Evidence of checking software/pipeline for known vulnerabilities in third-party libraries used
+    * [ ] Using Git to keep up to date on security vulnerabilities in dependencies https://docs.github.com/en/code-security
+    * [ ] Evidence of checking software/pipeline for common and critical vulnerabilities, e.g. SQL injection, Log4j vulnerability
 
 <a name="input"></a>
 # 2. Input
@@ -446,6 +458,7 @@ Other pipelines are listed at <https://github.com/phac-nml/nf-pipelines>.
 ## 9.3. Other resources
 
 * [PHA4GE proposed pipeline standards][pha4ge-pipeline-standards]: Proposed pipeline standards from the PHA4GE Bioinformatics Pipelines & Visualization Working Group
+* [Government of Canada: Guide for Publishing Open Source Code][gov-canada-open-source-software]
 * [nfcore pipeline schema][nfcore-pipeline-schema]
 * [nfcore parameters][nfcore-parameters]
 * [GA4GH Workflow Execution Service][ga4gh-wes]
@@ -505,3 +518,5 @@ specific language governing permissions and limitations under the License.
 [pipeline-tutorial]: https://github.com/apetkau/nf-core-assemblyexample
 [nf-core-add-pipeline]: https://nf-co.re/docs/contributing/adding_pipelines
 [nf-core-requirements]: https://nf-co.re/docs/contributing/guidelines#requirements
+[gov-canada-open-source-software]: https://www.canada.ca/en/government/system/digital-government/digital-government-innovations/open-source-software/guide-for-publishing-open-source-code.html
+[pha4ge-pipeline-security]: https://github.com/pha4ge/pipeline-resources/blob/main/docs/pipeline-standards.md#software-security-and-vulnerabilities
