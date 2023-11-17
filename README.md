@@ -108,7 +108,7 @@ Whether the pipeline you develop is intended to be contributed to nf-core or not
 
 The following are other requirements for developing pipelines.
 
-* [ ] [Software security and vulnerabilities](https://github.com/pha4ge/pipeline-resources/blob/main/docs/pipeline-standards.md#software-security-and-vulnerabilities): Please maintain good software security practices with pipeline code to be published. In particular, never store plain text passwords, API keys, ssh keys, or otherwise confidential information in software/pipelines which are distributed publicly. See the [PHA4GE pipeline guidelines][pha4ge-pipeline-security] for additional recommendations.
+* [ ] [Software security and vulnerabilities](https://github.com/pha4ge/pipeline-resources/blob/main/docs/pipeline-standards.md#software-security-and-vulnerabilities): Please maintain good software security practices with pipeline code to be published. In particular, never store plain text passwords, API keys, ssh keys, or otherwise confidential information in software/pipelines which are distributed publicly. See the [PHA4GE pipeline guidelines][pha4ge-pipeline-security] for additional recommendations. You may also consider referring to the [GitHub Code Security](https://docs.github.com/en/code-security) documentation.
 
 <a name="input"></a>
 # 2. Input
