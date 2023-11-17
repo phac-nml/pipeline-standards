@@ -445,6 +445,7 @@ Other pipelines are listed at <https://github.com/phac-nml/nf-pipelines>.
 
 ## 9.3. Other resources
 
+* [PHA4GE proposed pipeline standards][pha4ge-pipeline-standards]: Proposed pipeline standards from the PHA4GE Bioinformatics Pipelines & Visualization Working Group
 * [nfcore pipeline schema][nfcore-pipeline-schema]
 * [nfcore parameters][nfcore-parameters]
 * [GA4GH Workflow Execution Service][ga4gh-wes]
@@ -500,6 +501,7 @@ specific language governing permissions and limitations under the License.
 [nf-validation fromSamplesheet]: https://nextflow-io.github.io/nf-validation/samplesheets/fromSamplesheet/
 [iridanext-samplesheet]: ideas.md#samplesheets
 [iridanext-ideas]: ideas.md
+[pha4ge-pipeline-standards]: https://github.com/pha4ge/pipeline-resources/blob/main/docs/pipeline-standards.md
 [pipeline-tutorial]: https://github.com/apetkau/nf-core-assemblyexample
 [nf-core-add-pipeline]: https://nf-co.re/docs/contributing/adding_pipelines
 [nf-core-requirements]: https://nf-co.re/docs/contributing/guidelines#requirements
