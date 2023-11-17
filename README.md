@@ -9,7 +9,7 @@ This document describes the specification for developing [IRIDA Next][irida-next
   * [1.2. Developing a pipeline which won't be contributed to nf-core](#12-developing-a-pipeline-which-wont-be-contributed-to-nf-core)
     + [1.2.1. Requirements from nf-core](#121-requirements-from-nf-core)
   * [1.3. Requirements for integrating with IRIDA Next](#13-requirements-for-integrating-with-irida-next)
-  * [1.4. Other requirements][#14-other-requirements]
+  * [1.4. Other requirements](#14-other-requirements)
 - [2. Input](#2-input)
   * [2.1. Default samplesheet](#21-default-samplesheet)
   * [2.2. Types of input data](#22-types-of-input-data)
