@@ -7,6 +7,8 @@ This document describes the specification for developing [IRIDA Next][irida-next
 - [1. Starting development](#1-starting-development)
   * [1.1. Developing a pipeline to contribute to nf-core](#11-developing-a-pipeline-to-contribute-to-nf-core)
   * [1.2. Developing a pipeline which won't be contributed to nf-core](#12-developing-a-pipeline-which-wont-be-contributed-to-nf-core)
+    + [1.2.1. Requirements from nf-core](#121-requirements-from-nf-core)
+    + [1.2.2. Requirements for integrating with IRIDA Next](#122-requirements-for-integrating-with-irida-next)
 - [2. Input](#2-input)
   * [2.1. Default samplesheet](#21-default-samplesheet)
   * [2.2. Types of input data](#22-types-of-input-data)
@@ -66,26 +68,35 @@ If you intend to develop a pipeline to contribute to nf-core, please follow all 
 
 If, instead, the pipeline won't be contributed to nf-core, then the only following set of [nf-core requirements][nf-core-requirements] would need to be followed in addition to the [if the guidelines don't fit][nf-core-external-development] section of the nf-core guidelines, [using nf-core components outside of nf-core][nf-core-outside-nf-core] section, and the below IRIDA Next requirements sections.
 
-* [ ] **Nextflow: Workflows must be built using Nextflow.**
-* Identity and branding: Primary development must on the nf-core organisation.
-* Workflow specificity: There should only be a single pipeline per data / analysis type.
-* [ ] **Workflow size: Not too big, not too small.**
-* [ ] **Workflow name: Names should be lower case and without punctuation.**
-* [ ] **Use the template: All nf-core pipelines must be built using the nf-core template.**
-* [ ] **Software license: Pipelines must open source, released with the MIT license.**
-* Bundled documentation: Pipeline documentation must be hosted on the nf-core website.
-* [ ] **Docker support: Software must be bundled using Docker and versioned.**
-* [ ] **Continuous integration testing: Pipelines must run CI tests.**
-* [ ] **Semantic versioning: Pipelines must use stable release tags.**
-* [ ] **Standardised parameters: Strive to have standardised usage.**
-* [ ] **Single command: Pipelines should run in a single command.**
-* [ ] **Keywords: Excellent documentation and GitHub repository keywords.**
-* [ ] **Pass lint tests: The pipeline must not have any failures in the nf-core lint tests.**
-* [ ] **Credits and Acknowledgements: Pipelines must properly acknowledge prior work.**
-* [ ] **Minimum inputs: Pipelines should be able to run with as little input as possible.**
-* [ ] *Use nf-core git branches: Use master, dev and TEMPLATE.*
-   * *Please use `main` instead of `master`.*
+### 1.2.1. Requirements from nf-core
 
+* [ ] Nextflow: Workflows must be built using Nextflow.
+* [ ] [Workflow name](https://nf-co.re/docs/contributing/guidelines/requirements/workflow_name): Names should be lower case and without punctuation.
+* [ ] [Use the template](https://nf-co.re/docs/contributing/guidelines/requirements/workflow_name): All nf-core pipelines must be built using the nf-core template.
+* [ ] [Software license](https://nf-co.re/docs/contributing/guidelines/requirements/mit_license): Pipelines must open source, released with the MIT license.
+* [ ] [Docker support](https://nf-co.re/docs/contributing/guidelines/requirements/docker): Software must be bundled using Docker and versioned.
+* [ ] [Continuous integration testing](https://nf-co.re/docs/contributing/guidelines/requirements/ci_testing): Pipelines must run CI tests.
+* [ ] [Semantic versioning](https://nf-co.re/docs/contributing/guidelines/requirements/ci_testing): Pipelines must use stable release tags.
+* [ ] [Standardised parameters](https://nf-co.re/docs/contributing/guidelines/requirements/ci_testing): Strive to have standardised usage.
+* [ ] [Single command](https://nf-co.re/docs/contributing/guidelines/requirements/single_command): Pipelines should run in a single command.
+* [ ] [Keywords](https://nf-co.re/docs/contributing/guidelines/requirements/single_command): Excellent documentation and GitHub repository keywords.
+* [ ] [Pass lint tests](https://nf-co.re/docs/contributing/guidelines/requirements/single_command): The pipeline must not have any failures in the nf-core lint tests.
+    * *Note: It is possible to ignore some of the default nf-core linting with a [lint configuration file](https://nf-co.re/tools#linting-config).*
+* [ ] [Credits and Acknowledgements](https://nf-co.re/docs/contributing/guidelines/requirements/acknowledgements): Pipelines must properly acknowledge prior work.
+* [ ] [Minimum inputs](https://nf-co.re/docs/contributing/guidelines/requirements/acknowledgements): Pipelines should be able to run with as little input as possible.
+* [ ] *[Use nf-core git branches](https://nf-co.re/docs/contributing/guidelines/requirements/git_branches): Use master, dev and TEMPLATE.*
+   * *Note: Please use `main` instead of `master`.*
+
+### 1.2.2. Requirements for integrating with IRIDA Next
+
+The following is requirements for integrating a pipeline with IRIDA Next. These may overlap with existing nf-core and Nextflow standards.
+
+* [ ] [Input data using samplesheet and schema](#input): Please use a CSV samplesheet for referencing input data, where the structure of the CSV file is described in an `assets/schema_input.json` file. The JSON schema file will be used to render an interface in IRIDA Next for selecting and sending input data to be executed by a pipeline.
+* [ ] [Parameters described in nextflow.config and nextflow_schema.json](#parameters): Please describe parameters for the pipeline in the `nextflow.config` and `nextflow_schema.json` file. The JSON schema file will be used by IRIDA Next to render an interface for selecting parameters to pass to the pipeline.
+* [ ] [Output a JSON file describing data to load into IRIDA Next](#output): Please write an `output/iridanext.output.json.gz` file which describes the data to be loaded and stored within IRIDA Next (both files and metadata).
+* [ ] [Describe resource requirements for each module](#resource-requirements): Please describe resource requirements using only the labels described in the above link.
+
+<a name="input"></a>
 # 2. Input
 
 Input for pipelines follows the [nfcore parameters][nfcore-parameters] specification. In particular, input data will be passed via a CSV file, where each row represents data that can be processed independently through the pipeline (commonly a sample). The input CSV file is passed using the `--input` parameter to a pipeline (e.g., `--input samples.csv`).
@@ -156,6 +167,7 @@ In order to select data from IRIDA Next, please use one of the following keyword
 
 For an idea of a more advanced method of selecting data from IRIDA Next, please see [IRIDA Next samplesheet ideas documentation][iridanext-samplesheet].
 
+<a name="parameters"></a>
 # 3. Parameters
 
 Parameters within a pipeline are defined in the `nextflow.config` file (under the `params` scope), and then the `nextflow_schema.json` file is updated to contain the parameters by running `nf-core schema build`. This is described in the [nf-core contributing to pipelines][nf-core-contributing-to-pipelines] documentation.
@@ -173,6 +185,7 @@ params {
 
 The full set of parameters can be found in <https://github.com/phac-nml/iridanext-example-nf/blob/main/nextflow.config>.
 
+<a name="output"></a>
 # 4. Output
 
 ## 4.1. Files
@@ -332,6 +345,7 @@ container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity
 
 For more information, see the [Nextflow containers][] documentation and the [nf-core modules software requirements][] guide.
 
+<a name="resource-requirements"></a>
 # 6. Resource requirements
 
 To define computational resource requirements for each process, we will follow the [nf-core resource][nf-core-module-resource] standards as much as possible, where resources are adjusted by a `label` in each `process` of a pipeline. The pipeline developer will be responsible for setting an appropriate `label` in each process of the NextFlow pipeline to appropriatly define required resources. In addition, the developer is responsible for tuning any resources defined in the `config/base.config` file, as described in the [nf-core tuning workflow resources][] documentation.
