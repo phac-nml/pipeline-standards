@@ -72,18 +72,18 @@ If, instead, the pipeline won't be contributed to nf-core, then the only followi
 
 * [ ] Nextflow: Workflows must be built using Nextflow.
 * [ ] [Workflow name](https://nf-co.re/docs/contributing/guidelines/requirements/workflow_name): Names should be lower case and without punctuation.
-* [ ] [Use the template](https://nf-co.re/docs/contributing/guidelines/requirements/workflow_name): All nf-core pipelines must be built using the nf-core template.
+* [ ] [Use the template](https://nf-co.re/docs/contributing/guidelines/requirements/use_the_template): All nf-core pipelines must be built using the nf-core template.
 * [ ] [Software license](https://nf-co.re/docs/contributing/guidelines/requirements/mit_license): Pipelines must open source, released with the MIT license.
 * [ ] [Docker support](https://nf-co.re/docs/contributing/guidelines/requirements/docker): Software must be bundled using Docker and versioned.
 * [ ] [Continuous integration testing](https://nf-co.re/docs/contributing/guidelines/requirements/ci_testing): Pipelines must run CI tests.
 * [ ] [Semantic versioning](https://nf-co.re/docs/contributing/guidelines/requirements/semantic_versioning): Pipelines must use stable release tags.
-* [ ] [Standardised parameters](https://nf-co.re/docs/contributing/guidelines/requirements/semantic_versioning): Strive to have standardised usage.
+* [ ] [Standardised parameters](https://nf-co.re/docs/contributing/guidelines/requirements/parameters): Strive to have standardised usage.
 * [ ] [Single command](https://nf-co.re/docs/contributing/guidelines/requirements/single_command): Pipelines should run in a single command.
-* [ ] [Keywords](https://nf-co.re/docs/contributing/guidelines/requirements/single_command): Excellent documentation and GitHub repository keywords.
-* [ ] [Pass lint tests](https://nf-co.re/docs/contributing/guidelines/requirements/single_command): The pipeline must not have any failures in the nf-core lint tests.
+* [ ] [Keywords](https://nf-co.re/docs/contributing/guidelines/requirements/keywords): Excellent documentation and GitHub repository keywords.
+* [ ] [Pass lint tests](https://nf-co.re/docs/contributing/guidelines/requirements/linting): The pipeline must not have any failures in the nf-core lint tests.
     * *Note: It is possible to ignore some of the default nf-core linting with a [lint configuration file](https://nf-co.re/tools#linting-config).*
 * [ ] [Credits and Acknowledgements](https://nf-co.re/docs/contributing/guidelines/requirements/acknowledgements): Pipelines must properly acknowledge prior work.
-* [ ] [Minimum inputs](https://nf-co.re/docs/contributing/guidelines/requirements/acknowledgements): Pipelines should be able to run with as little input as possible.
+* [ ] [Minimum inputs](https://nf-co.re/docs/contributing/guidelines/requirements/minimum_inputs): Pipelines should be able to run with as little input as possible.
 * [ ] *[Use nf-core git branches](https://nf-co.re/docs/contributing/guidelines/requirements/git_branches): Use master, dev and TEMPLATE.*
    * *Note: Please use `main` instead of `master`.*
 
