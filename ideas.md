@@ -1,8 +1,13 @@
-# IRIDA Next Samplesheet idea
+# IRIDA Next pipeline integration ideas
+
+The following are collections of additional ideas for integrating pipelines in the future.
+
+<a href="samplesheets"></a>
+# 1. Future IRIDA Next Samplesheets
 
 The following is a description of a more complex way to match up columns in a pipeline samplesheet with data from IRIDA Next.
 
-# 1. Match CSV columns to IRIDA Next data
+## 1.1. Match CSV columns to IRIDA Next data
 
 The default `--input` CSV file consists of the columns `sample`, `fastq_1`, and `fastq_2`. These will be automatically matched up to a sample identifier, and paired-end (or single-end) fastq files stored within IRIDA Next.
 
@@ -25,7 +30,7 @@ In order to match up additional information, you will need to define a `assets/i
 }
 ```
 
-## 1.1. Specification section
+### 1.1.1. Specification section
 
 The `specification` section defines information about the IRIDA Next specification. Here, the only key available is the version (included so that this file can be expanded later).
 
@@ -37,7 +42,7 @@ The `specification` section defines information about the IRIDA Next specificati
 }
 ```
 
-## 1.2. Inputs section
+### 1.1.2. Inputs section
 
 The `inputs` section defines how to map column names in the input CSV file to specific types of data in IRIDA Next.
 

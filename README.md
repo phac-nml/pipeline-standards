@@ -48,8 +48,9 @@ This document describes the specification for developing [IRIDA Next][irida-next
   * [9.1. Pipeline development tutorial](#91-pipeline-development-tutorial)
   * [9.2. List of pipelines](#92-list-of-pipelines)
   * [9.3. Other resources](#93-other-resources)
-- [10. Publishing guidelines](#10-publishing-guidelines)
-- [11. Legal](#11-legal)
+- [10. Future pipeline integration ideas](#10-future-pipeline-integration-ideas)
+- [11. Publishing guidelines](#11-publishing-guidelines)
+- [12. Legal](#12-legal)
 
 # 1. Starting development
 
@@ -165,7 +166,7 @@ In order to select data from IRIDA Next, please use one of the following keyword
 * **fastq_2**: The second of paired-end Illumina fastq files (leave empty if using single-end data).
 * **assembly_fasta**: The assembled genome (in FASTA format).
 
-For an idea of a more advanced method of selecting data from IRIDA Next, please see [IRIDA Next samplesheet ideas documentation][iridanext-samplesheet].
+For additional ideas of a more advanced method of selecting data from IRIDA Next, please see [IRIDA Next samplesheet ideas documentation][iridanext-samplesheet].
 
 <a name="parameters"></a>
 # 3. Parameters
@@ -444,11 +445,15 @@ Other pipelines are listed at <https://github.com/phac-nml/nf-pipelines>.
 * [nfcore parameters][nfcore-parameters]
 * [GA4GH Workflow Execution Service][ga4gh-wes]
 
-# 10. Publishing guidelines
+# 10. Future pipeline integration ideas
+
+Additional ideas for integrating pipelines in the future can be found in the [IRIDA Next pipeline integration ideas][iridanext-ideas] document.
+
+# 11. Publishing guidelines
 
 Our intention is to follow, as much as possible, the standards and practices set out by nf-core. However, we leave it as optional to actually publish pipelines/modules/subworkflows with the official nf-core repositories. We would encourage this where it makes sense in order to support re-use and giving back to the community (please refer to the [nf-core publishing requirements][] for the guidelines in this case). However, it is perfectly acceptible to publish pipelines/modules/subworkflows in separate Git repositories outside of nf-core. Please see the [if the guidelines don't fit][nf-core-external-development] and [using nf-core components outside of nf-core][nf-core-outside-nf-core] sections of the nf-core documentation for more information on this scenario and other locations to list your pipeline.
 
-# 11. Legal
+# 12. Legal
 
 Copyright 2023 Government of Canada
 
@@ -489,7 +494,8 @@ specific language governing permissions and limitations under the License.
 [nf-core-outside-nf-core]: https://nf-co.re/docs/contributing/tutorials/unofficial_pipelines
 [nf-validation samplesheet]: https://nextflow-io.github.io/nf-validation/nextflow_schema/sample_sheet_schema_specification/
 [nf-validation fromSamplesheet]: https://nextflow-io.github.io/nf-validation/samplesheets/fromSamplesheet/
-[iridanext-samplesheet]: iridanext-samplesheet.md
+[iridanext-samplesheet]: ideas.md#samplesheets
+[iridanext-ideas]: ideas.md
 [pipeline-tutorial]: https://github.com/apetkau/nf-core-assemblyexample
 [nf-core-add-pipeline]: https://nf-co.re/docs/contributing/adding_pipelines
 [nf-core-requirements]: https://nf-co.re/docs/contributing/guidelines#requirements
