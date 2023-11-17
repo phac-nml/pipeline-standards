@@ -87,6 +87,10 @@ If, instead, the pipeline won't be contributed to nf-core, then the only followi
 * [ ] [Minimum inputs](https://nf-co.re/docs/contributing/guidelines/requirements/minimum_inputs): Pipelines should be able to run with as little input as possible.
 * [ ] *[Use nf-core git branches](https://nf-co.re/docs/contributing/guidelines/requirements/git_branches): Use master, dev and TEMPLATE.*
    * *Note: Please use `main` instead of `master`.*
+     
+ The following are additional requirements for [using nf-core components outside of nf-core][nf-core-outside-nf-core].
+ * [ ] [Acknowledging nf-core](https://nf-co.re/docs/contributing/tutorials/unofficial_pipelines#acknowledging-nf-core): Please add an acknowledgement statement to the pipeline `README.md` for nf-core.
+ * [ ] [Removing nf-core only branding](https://nf-co.re/docs/contributing/tutorials/unofficial_pipelines#removing-nf-core-only-branding): Please remove any nf-core only branding from your repository.
 
 ## 1.3. Requirements for integrating with IRIDA Next
 
