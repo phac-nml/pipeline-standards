@@ -466,7 +466,7 @@ Other pipelines are listed at <https://github.com/phac-nml/nf-pipelines>.
 
 Additional ideas for integrating pipelines in the future can be found in the [IRIDA Next pipeline integration ideas][iridanext-ideas] document.
 
-<a href="security"></a>
+<a name="security"></a>
 # 11. Security practices
 
 Please maintain good software security practices with pipeline code to be published. In particular, never store plain text passwords, API keys, ssh keys, or otherwise confidential information in software/pipelines which are distributed publicly.
