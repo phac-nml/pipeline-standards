@@ -108,7 +108,7 @@ Whether the pipeline you develop is intended to be contributed to nf-core or not
 
 The following are other requirements for developing pipelines.
 
-* [ ] [Software security and vulnerabilities](https://github.com/pha4ge/pipeline-resources/blob/main/docs/pipeline-standards.md#software-security-and-vulnerabilities): Please maintain good software security practices with pipeline code to be published. In particular, never store plain text passwords, API keys, ssh keys, or otherwise confidential information in software/pipelines which are distributed publicly. See the [PHA4GE pipeline guidelines][pha4ge-pipeline-security] for additional recommendations. You may also consider referring to the [GitHub Code Security](https://docs.github.com/en/code-security) documentation.
+* [ ] [Software security and vulnerabilities](#security): Please maintain good software security practices with pipeline code to be published. In particular, never store plain text passwords, API keys, ssh keys, or otherwise confidential information in software/pipelines which are distributed publicly. You may consider referring to the [GitHub Code Security](https://docs.github.com/en/code-security) documentation for securing your repository.
 
 <a name="input"></a>
 # 2. Input
@@ -464,11 +464,34 @@ Other pipelines are listed at <https://github.com/phac-nml/nf-pipelines>.
 
 Additional ideas for integrating pipelines in the future can be found in the [IRIDA Next pipeline integration ideas][iridanext-ideas] document.
 
-# 11. Publishing guidelines
+<a href="security"></a>
+# 11. Security practices
+
+Please maintain good software security practices with pipeline code to be published. In particular, never store plain text passwords, API keys, ssh keys, or otherwise confidential information in software/pipelines which are distributed publicly.
+
+## 11.1. Automated repository scanning (recommendations)
+
+There exist automated tools to aid in maintining secure code and identifying potential issues. The [GitHub Securing your repository][github-secure-repository] documentation provides detailed information on how to secure your GitHub repository, which includes automated scanning. In particular, some recommendations include:
+
+* [Enable secret scanning][github-secret-scanning]: This will scan code and issues for patterns potentially matching secrets (e.g., API keys) that should not be made public and provide alerts for anything that was found.
+* [Enable code scanning][github-codeql]: GitHub provides CodeQL for scanning code for potential vulnerabilities or errors in your code and providing recommended fixes. While this does not support the Nextflow language, other programming languages (e.g., Python) are supported.
+* [Enable dependabot][github-dependabot]: Dependabot scans for and provides alerts on insecure dependencies of your software. While [Nextflow is not directly supported by github][github-core-languages], this might be a service of use for other repositories or other code and dependencies managed within a pipeline.
+
+Enabling these services can be done directly on a GitHub repository in the **Settings > Code security and analysis** section.
+
+![security-settings-github.png][]
+
+Once enabled, security alerts appear in the **Security** tab on GitHub.
+
+![security-alerts.png][]
+
+For more security recommendations, please see the [PHA4GE pipeline guidelines][pha4ge-pipeline-security].
+
+# 12. Publishing guidelines
 
 Our intention is to follow, as much as possible, the standards and practices set out by nf-core. However, we leave it as optional to actually publish pipelines/modules/subworkflows with the official nf-core repositories. We would encourage this where it makes sense in order to support re-use and giving back to the community (please refer to the [nf-core publishing requirements][] for the guidelines in this case). However, it is perfectly acceptible to publish pipelines/modules/subworkflows in separate Git repositories outside of nf-core. Please see the [if the guidelines don't fit][nf-core-external-development] and [using nf-core components outside of nf-core][nf-core-outside-nf-core] sections of the nf-core documentation for more information on this scenario and other locations to list your pipeline.
 
-# 12. Legal
+# 13. Legal
 
 Copyright 2023 Government of Canada
 
@@ -517,3 +540,10 @@ specific language governing permissions and limitations under the License.
 [nf-core-requirements]: https://nf-co.re/docs/contributing/guidelines#requirements
 [gov-canada-open-source-software]: https://www.canada.ca/en/government/system/digital-government/digital-government-innovations/open-source-software/guide-for-publishing-open-source-code.html
 [pha4ge-pipeline-security]: https://github.com/pha4ge/pipeline-resources/blob/main/docs/pipeline-standards.md#software-security-and-vulnerabilities
+[github-secret-scanning]: https://docs.github.com/en/code-security/getting-started/securing-your-repository#configuring-secret-scanning
+[github-codeql]: https://docs.github.com/en/code-security/getting-started/securing-your-repository#configuring-code-scanning
+[github-dependabot]: https://docs.github.com/en/code-security/getting-started/securing-your-repository#managing-dependabot-alerts
+[github-core-languages]: https://docs.github.com/en/get-started/learning-about-github/github-language-support#core-languages-supported-by-github-features
+[github-secure-repository]: https://docs.github.com/en/code-security/getting-started/securing-your-repository
+[security-settings-github.png]: images/security-settings-github.png
+[security-alerts.png]: images/security-alerts.png
