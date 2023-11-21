@@ -50,8 +50,10 @@ This document describes the specification for developing [IRIDA Next][irida-next
   * [9.2. List of pipelines](#92-list-of-pipelines)
   * [9.3. Other resources](#93-other-resources)
 - [10. Future pipeline integration ideas](#10-future-pipeline-integration-ideas)
-- [11. Publishing guidelines](#11-publishing-guidelines)
-- [12. Legal](#12-legal)
+- [11. Security practices](#11-security-practices)
+  * [11.1. Automated repository scanning (recommendations)](#111-automated-repository-scanning-recommendations)
+- [12. Publishing guidelines](#12-publishing-guidelines)
+- [13. Legal](#13-legal)
 
 # 1. Starting development
 
