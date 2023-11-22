@@ -70,7 +70,7 @@ If you intend to develop a pipeline to contribute to nf-core, please follow all 
 
 ## 1.2. Developing a pipeline which won't be contributed to nf-core
 
-If, instead, the pipeline won't be contributed to nf-core, then the only following set of [nf-core requirements][nf-core-requirements] would need to be followed in addition to the [if the guidelines don't fit][nf-core-external-development] section of the nf-core guidelines, [using nf-core components outside of nf-core][nf-core-outside-nf-core] section, and the below IRIDA Next requirements sections.
+If, instead, the pipeline won't be contributed to nf-core, then only the following set of [nf-core requirements][nf-core-requirements] would need to be followed in addition to the [if the guidelines don't fit][nf-core-external-development] section of the nf-core guidelines, [using nf-core components outside of nf-core][nf-core-outside-nf-core] section, and the below IRIDA Next requirements sections.
 
 ### 1.2.1. Requirements from nf-core
 
