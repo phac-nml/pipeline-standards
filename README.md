@@ -42,6 +42,7 @@ This document describes the specification for developing [IRIDA Next][irida-next
   * [6.2. Tuning resource limits with parameters](#62-tuning-resource-limits-with-parameters)
 - [7. Testing](#7-testing)
   * [7.1. Nextflow test profile](#71-nextflow-test-profile)
+  * [7.2. Unit/integration tests](#72-unitintegration-tests)
 - [8. Executing pipelines](#8-executing-pipelines)
   * [8.1. Standalone execution](#81-standalone-execution)
   * [8.2. Execution via GA4GE WES](#82-execution-via-ga4ge-wes)
@@ -430,6 +431,24 @@ In particular, a `test` profile should be setup in Nextflow so that the pipeline
 
 Parameters for the `test` profile should be specified in the `conf/test.config` file. This can reference data stored elsewhere (e.g., on GitHub). For example, see the `test.config` for the IRIDA Next sample pipeline <https://github.com/phac-nml/iridanext-example-nf/blob/main/conf/test.config>.
 
+## 7.2. Unit/integration tests
+
+It is also expected to include with each pipeline a set of unit/integration tests. These can be implemented by using [nf-test][].
+
+Documentation is provided on the [nf-test website][nf-test], but the quick way to get started is to first install `nf-test` (e.g., via conda):
+
+```bash
+conda create --name nextflow nextflow nf-test
+```
+
+Then, run the following to create the necessary files for `nf-test` tests:
+
+```bash
+nf-test init
+```
+
+The nf-core templates for pipelines should include a GitHub actions task for running `nf-test` on pull-requests. Please refer to the [nf-test documentation][nf-test] for more details.
+
 # 8. Executing pipelines
 
 ## 8.1. Standalone execution
@@ -578,3 +597,4 @@ specific language governing permissions and limitations under the License.
 [security-settings-github.png]: images/security-settings-github.png
 [security-alerts.png]: images/security-alerts.png
 [nf-iridanext]: https://github.com/phac-nml/nf-iridanext
+[nf-test]: https://www.nf-test.com/
