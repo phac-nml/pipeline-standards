@@ -132,38 +132,36 @@ The default samplesheet looks like:
 
 ## 2.2. Types of input data
 
-There are two types of input data: **files** and **simple**.
+There are three types of columns within a samplesheet used for input: the **sample** identifier, **files**, and **metadata**.
 
-### 2.2.1. Input files
+### 2.2.1. Sample identifier
+
+The sample identifier is used to match up data from the `--input samplesheet.csv` file to the individual samples this data is associated with. IRIDA Next expects the sample identifier to be stored within the `sample` column in the samplesheet. This identifier will be used to associate output files and metadata from pipelines with the respective sample (see the [4. Output](#4-output) section for details).
+
+### 2.2.2. Input files
 
 An input file consists of some data stored within a file external to the CSV file passed to `--input`. Commonly this would be sequence reads (and would be indicated with the `fastq_1` and `fastq_2` columns in the CSV file above). However, this could be any data intended to be delivered to pipeline steps via a channel (e.g., `bam` files of aligned reads, `fasta` files of assembled genomes, `csv` files of allelic profiles).
 
-#### 2.2.1.1. Example sample input files
+#### 2.2.2.1. Example sample input files
 
 | sample  | fastq_1 **(an input file)** | fastq_2 **(another input file)** | assembly **(another input file)** |
 |---------|--------------|--------------|----|
 | SampleA | file_1.fq.gz | file_2.fq.gz | |
 | SampleB | | | assembly.fa.gz |
 
-#### 2.2.1.2. Example allelic profile input files
+### 2.2.3. Metadata input types
 
-| profile_id | scheme    | alleles **(input file)** |
-|------------|-----------|--------------------------|
-| ProfilesA  | senterica | alleles.tsv.gz           |
+A metadata input type is something that can be represented within a cell in a CSV file without reference to some external file (e.g., a Number or a String). In integration with IRIDA Next, these will be derived from contextual metadata of a sample (e.g., Organism).
 
-### 2.2.2. Simple input types
+#### 2.2.3.1. Example metadata input types
 
-A simple input type is something that can be represented within a cell in a CSV file without reference to some external file (e.g., a Number or a String). In integration with IRIDA Next, these will often be derived from contextual metadata of a sample (e.g., Organism) or will be the sample identifier.
-
-#### 2.2.2.1. Example simple input types
-
-| sample **(simple input)**  | organism **(simple input)** | fastq_1      | fastq_2      |
+| sample | organism **(metadata input)** | fastq_1      | fastq_2      |
 |----------------------------|-----------------------------|--------------|--------------|
 | SampleA                    | Salmonella enterica         | file_1.fq.gz | file_2.fq.gz |
 
-## 2.3. Modify samplesheet
+## 2.3. Defining the samplesheet structure for a pipeline
 
-In order to modify the samplesheet structure there are two main tasks to complete.
+In order to define the samplesheet structure for a particular pipeline, there are two main tasks to complete.
 
 ### 2.3.1. Update samplesheet schema specification
 
@@ -173,16 +171,116 @@ By default, the samplesheet schema assumes you have three input columns: `sample
 
 For custom types of data for a pipeline, please modify this JSON schema by modifying the `assets/schema_input.json` file. Also, make sure your pipeline is configured to use [nf-validation fromSamplesheet][nf-validation fromsamplesheet] to create a channel of input data for your pipeline from an input CSV file that follows this JSON schema.
 
-#### 2.3.1.1. Select column names from IRIDA Next keywords
+#### 2.3.1.1. Defining sample identifiers in IRIDA Next
 
-In order to select data from IRIDA Next, please use one of the following keywords as column names in the `--input` CSV file.
+Sample identifiers from IRIDA Next are placed into an input samplesheet.csv for a Nextflow pipeline in the `sample` column. That is, if the expected samplesheet structure is as below:
 
-* **sample**: The IRIDA Next sample identifier.
-* **fastq_1**: The first of paired-end Illumina fastq files (or a single-end Illumina fastq file).
-* **fastq_2**: The second of paired-end Illumina fastq files (leave empty if using single-end data).
-* **assembly_fasta**: The assembled genome (in FASTA format).
+**samplesheet.csv**
+| sample  |
+|---------|
+| SampleA |
+| SampleB |
 
-For additional ideas of a more advanced method of selecting data from IRIDA Next, please see [IRIDA Next samplesheet ideas documentation][iridanext-samplesheet].
+Then the following should be defined in the `assets/schema_input.json`:
+
+**assets/schema_input.json**
+```json
+{
+    // ...
+    "items": {
+        "type": "object",
+        "properties": {
+            "sample": {
+                "type": "string",
+                "pattern": "^\\S+$",
+                "meta": ["id"]
+            }
+        }
+    }
+}
+```
+
+Here, `"meta": ["id"]` is used internally by Nextflow and the nf-validation plugin to map the identifier in the `sample` column in the samplesheet.csv to a `meta.id` value, which is expected to be passed alongside any input data in a channel for Nextflow/nf-core processes. See the [nf-validation Sample sheet keys](https://nextflow-io.github.io/nf-validation/latest/nextflow_schema/sample_sheet_schema_specification/#sample-sheet-keys) documentation for more details.
+
+#### 2.3.1.2. Defining selection of input files in IRIDA Next
+
+In order to configure a pipeline to select input files from IRIDA Next, please make sure the samplesheet `assets/schema_input.json` for the column contains the following keywords:
+
+* `"format": "file-type"`: This is used by IRIDA Next to indicate that a particular column/field in the samplesheet should be a file associated with a sample. This is also by the nf-validation plugin in Nextflow to validate the respective column as containing a file path and check for existence of this file. See the [nf-validation schema specification](https://nextflow-io.github.io/nf-validation/latest/nextflow_schema/nextflow_schema_specification/#format) for more details.
+* `"pattern": ".*.f(ast)?q(.gz)?$"`: This is used by IRIDA Next to constrain what sorts of files attached to a sample can be used as input to this column (e.g., reads in fastq format, assemblies in fasta format, etc). The value here is a regular expression for a file path. On the Nextflow nf-validation side, this is used to also validate the input paths in the samplesheet are as expected (i.e., they match the defined regular expression).
+* `fastq_1` and `fastq_2` for paired-end input fastqs: The samplesheet column names `fastq_1` and `fastq_2` should be used to indicate input paired-end fastq files. Using these column names will mean IRIDA Next will make sure the pairs of reads are properly paired (i.e., if there's multiple read sets attached to a sample it will guarantee that only pairs of reads associated with each other will be allowed as input to the pipeline).
+
+##### 2.3.1.2.1. Example samplesheet and JSON schema for an assembly
+
+As an example, if a pipeline is intended to take as input an assembled genome (in fasta format) for each sample, the following would be how the samplesheet could be defined:
+
+**samplesheet.csv**
+| sample  | assembly    |
+|---------|-------------|
+| SAMPLE1 | s1.fasta.gz |
+| SAMPLE2 | s2.fasta.gz |
+
+The following would be an example structure found within the `assets/schema_input.json` file:
+
+**assets/schema_input.json**
+```json
+{
+    // ...
+    "items": {
+        "type": "object",
+        "properties": {
+            "sample": {
+                "type": "string",
+                "pattern": "^\\S+$",
+                "meta": ["id"]
+            },
+            "assembly": {
+                "type": "string",
+                "format": "file-path",
+                "pattern": "^\\S+\\.f(ast)?a(\\.gz)?$"
+            }
+        }
+    }
+}
+```
+
+#### 2.3.1.3. Defining selection of input metadata in IRIDA Next
+
+In order to configure a pipeline to select input metadata from IRIDA Next, please make sure the samplesheet `assets/schema_input.json` for the column contains **does not** contain `"format": "file-path"` (and is not named `sample`, `fastq_1`, or `fastq_2`). That is to say, any column in the samplesheet which is not marked as requiring an input file is assumed to be derived from metadata associated with samples in IRIDA Next.
+
+##### 2.3.1.3.1. Example samplesheet and JSON schema for a metadata value
+
+As an example, if a pipeline is intended to take as input a metadata value, the following would be how the samplesheet could be defined:
+
+**samplesheet.csv**
+| sample  | organism    |
+|---------|-------------|
+| SAMPLE1 | Salmonella  |
+| SAMPLE2 | Salmonella  |
+
+The following would be an example structure found within the `assets/schema_input.json` file:
+
+**assets/schema_input.json**
+```json
+{
+    // ...
+    "items": {
+        "type": "object",
+        "properties": {
+            "sample": {
+                "type": "string",
+                "pattern": "^\\S+$",
+                "meta": ["id"]
+            },
+            "organism": {
+                "type": "string"
+            }
+        }
+    }
+}
+```
+
+IRIDA Next will provide a mechanism to select the appropriate metadata field for samples (i.e., the name of the samplesheet column is unrelated to the selected metadata from IRIDA Next).
 
 <a name="parameters"></a>
 # 3. Parameters
