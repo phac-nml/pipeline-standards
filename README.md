@@ -284,7 +284,7 @@ The following would be an example structure found within the `assets/schema_inpu
 }
 ```
 
-IRIDA Next will provide a mechanism to select the appropriate metadata field for samples (i.e., the name of the samplesheet column is unrelated to the selected metadata from IRIDA Next).
+IRIDA Next will attempt to autopopulate the `organism` column in the samplesheet from the `oranism` metadata field for samples, but provides a mechanism to override the selected metadata field for samples.
 
 <a name="parameters"></a>
 # 3. Parameters
