@@ -205,9 +205,10 @@ Here, `"meta": ["id"]` is used internally by Nextflow and the nf-validation plug
 
 In order to configure a pipeline to select input files from IRIDA Next, please make sure the samplesheet `assets/schema_input.json` for the column contains the following keywords:
 
-* `"format": "file-type"`: This is used by IRIDA Next to indicate that a particular column/field in the samplesheet should be a file associated with a sample. This is also by the nf-validation plugin in Nextflow to validate the respective column as containing a file path and check for existence of this file. See the [nf-validation schema specification](https://nextflow-io.github.io/nf-validation/latest/nextflow_schema/nextflow_schema_specification/#format) for more details.
-* `"pattern": ".*.f(ast)?q(.gz)?$"`: This is used by IRIDA Next to constrain what sorts of files attached to a sample can be used as input to this column (e.g., reads in fastq format, assemblies in fasta format, etc). The value here is a regular expression for a file path. On the Nextflow nf-validation side, this is used to also validate the input paths in the samplesheet are as expected (i.e., they match the defined regular expression).
-* `fastq_1` and `fastq_2` for paired-end input fastqs: The samplesheet column names `fastq_1` and `fastq_2` should be used to indicate input paired-end fastq files. Using these column names will mean IRIDA Next will make sure the pairs of reads are properly paired (i.e., if there's multiple read sets attached to a sample it will guarantee that only pairs of reads associated with each other will be allowed as input to the pipeline).
+* _`"format": "file-type"`_: This is used by IRIDA Next to indicate that a particular column/field in the samplesheet should be a file associated with a sample. This is also by the nf-validation plugin in Nextflow to validate the respective column as containing a file path and check for existence of this file. See the [nf-validation schema specification](https://nextflow-io.github.io/nf-validation/latest/nextflow_schema/nextflow_schema_specification/#format) for more details.
+* _`"pattern": ".*.f(ast)?q(.gz)?$"`_: This is used by IRIDA Next to constrain what sorts of files attached to a sample can be used as input to this column (e.g., reads in fastq format, assemblies in fasta format, etc). The value here is a regular expression for a file path. On the Nextflow nf-validation side, this is used to also validate the input paths in the samplesheet are as expected (i.e., they match the defined regular expression).
+* _`fastq_1` and `fastq_2` for **paired/single-end input fastqs**_: The samplesheet column names `fastq_1` and `fastq_2` should be used to indicate input paired/single-end fastq files. Using these column names will mean IRIDA Next will make sure the pairs of reads are properly paired (i.e., if there's multiple read sets attached to a sample it will guarantee that only pairs of reads associated with each other will be allowed as input to the pipeline).
+* _Other input files (other than paired/single-end fastqs) can use any other column name._
 
 #### 2.3.2.1. Example samplesheet and JSON schema for an assembly
 
@@ -245,7 +246,11 @@ The following would be an example structure found within the `assets/schema_inpu
 
 ### 2.3.3. Defining selection of input metadata in IRIDA Next
 
-In order to configure a pipeline to select input metadata from IRIDA Next, please make sure the samplesheet `assets/schema_input.json` for the column contains **does not** contain `"format": "file-path"` (and is not named `sample`, `fastq_1`, or `fastq_2`). That is to say, any column in the samplesheet which is not marked as requiring an input file is assumed to be derived from metadata associated with samples in IRIDA Next.
+In order to configure a pipeline to select input metadata from IRIDA Next, please make sure the samplesheet `assets/schema_input.json` for the column contains **does not** contain `"format": "file-path"`. That is:
+
+* _**Does not** contain `"format": "file-path"`_: This is the key part of defining selection of metadata for IRIDA Next (the assumption being anything that is not a file is metadata).
+* _**Does not** use column names `sample`, `fastq_1`, or `fastq_2`_: These are reserved column names in a samplesheet for IRIDA Next.
+* _The column name in samplesheet should match metadata field_: IRIDA Next will attempt to automatically select metadata for a pipeline based on the column name in the input samplesheet for a pipeline. That is, if the samplesheet names a column `organism`, then IRIDA Next will attempt to auto-populate the `organism` metadata field from the sample data when running the pipline. Users have the option in IRIDA Next to override the selected metadata key when running a pipeline (e.g., if the metadata field in IRIDA Next to use is named *species* instead).
 
 #### 2.3.3.1. Example samplesheet and JSON schema for a metadata value
 
@@ -279,7 +284,7 @@ The following would be an example structure found within the `assets/schema_inpu
 }
 ```
 
-IRIDA Next will provide a mechanism to select the appropriate metadata field for samples (i.e., the name of the samplesheet column is unrelated to the selected metadata from IRIDA Next).
+IRIDA Next will attempt to autopopulate the `organism` column in the samplesheet from the `oranism` metadata field for samples, but provides a mechanism to override the selected metadata field for samples.
 
 <a name="parameters"></a>
 # 3. Parameters
