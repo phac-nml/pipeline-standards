@@ -66,7 +66,7 @@ IRIDA Next pipelines attempt to follow as much as possible the [nf-core][] guide
 * [Nf-core guidelines][nf-core-guidelines]
 * [Nf-core adding a new pipeline][nf-core-add-pipeline]
 
-While we do follow nf-core as closely as possible, there are a number of differences or additions we make for integrating pipelines into IRIDA Next. In particular, while pipelines can be contributed to the [nf-core index of pipelines][nf-core-pipelines], we do not require them to be as we may have different requirements for our own pipelines. Hence, some of the nf-core requirements may not apply if you do not intend to contribute the pipeline to nf-core.
+While we do follow nf-core as closely as possible, there are a number of differences or additions we make for integrating pipelines into IRIDA Next. Hence, some of the nf-core requirements may not apply if you do not intend to contribute the pipeline to nf-core.
 
 ## 1.1. Developing a pipeline to contribute to nf-core
 
@@ -74,7 +74,7 @@ If you intend to develop a pipeline to contribute to nf-core, please follow all 
 
 ## 1.2. Developing a pipeline which won't be contributed to nf-core
 
-If, instead, the pipeline won't be contributed to nf-core, then the only following set of [nf-core requirements][nf-core-requirements] would need to be followed in addition to the [if the guidelines don't fit][nf-core-external-development] section of the nf-core guidelines, [using nf-core components outside of nf-core][nf-core-outside-nf-core] section, and the below IRIDA Next requirements sections.
+If, instead, the pipeline won't be contributed to nf-core, then only the following set of nf-core requirements would need to be followed, along with the IRIDA Next requirements sections below.
 
 ### 1.2.1. Requirements from nf-core
 
@@ -470,7 +470,7 @@ Please see the [nf-iridanext documentation][nf-iridanext] for more details on in
 
 ## 5.1. nf-core modules
 
-Nf-core contains a number of modules for processes to execute different bioinformatics tools ([nf-core modules][]). Where possible, please use nf-core modules within your pipeline. These can be installed vi running the following command from the [nf-core tools][nf-core-modules-install].
+Nf-core contains a number of modules for processes to execute different bioinformatics tools ([nf-core modules][]). Where possible, please use nf-core modules within your pipeline. These can be installed via running the following command from the [nf-core tools][nf-core-modules-install].
 
 ```bash
 nf-core modules install [NAME]
@@ -681,8 +681,8 @@ specific language governing permissions and limitations under the License.
 [nf-core publishing requirements]: https://nf-co.re/docs/contributing/guidelines#requirements
 [nf-core-external-development]: https://nf-co.re/docs/contributing/guidelines#if-the-guidelines-dont-fit
 [nf-core-outside-nf-core]: https://nf-co.re/docs/contributing/tutorials/unofficial_pipelines
-[nf-validation samplesheet]: https://nextflow-io.github.io/nf-validation/nextflow_schema/sample_sheet_schema_specification/
-[nf-validation fromSamplesheet]: https://nextflow-io.github.io/nf-validation/samplesheets/fromSamplesheet/
+[nf-validation samplesheet]: https://nextflow-io.github.io/nf-validation/latest/nextflow_schema/sample_sheet_schema_specification/
+[nf-validation fromSamplesheet]: https://nextflow-io.github.io/nf-validation/latest/samplesheets/fromSamplesheet/
 [nf-validation]: https://nextflow-io.github.io/nf-validation/latest/
 [iridanext-samplesheet]: ideas.md#samplesheets
 [iridanext-ideas]: ideas.md
