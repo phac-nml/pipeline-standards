@@ -1,61 +1,62 @@
 # IRIDA Next Nextflow pipeline specification
 
-*This document is in-progress and should be considered as a **DRAFT** that is subject to change at any time.*
+_This document is in-progress and should be considered as a **DRAFT** that is subject to change at any time._
 
 This document describes the specification for developing [IRIDA Next][irida-next] Nextflow pipelines.
 
 - [1. Starting development](#1-starting-development)
-  * [1.1. Developing a pipeline to contribute to nf-core](#11-developing-a-pipeline-to-contribute-to-nf-core)
-  * [1.2. Developing a pipeline which won't be contributed to nf-core](#12-developing-a-pipeline-which-wont-be-contributed-to-nf-core)
-    + [1.2.1. Requirements from nf-core](#121-requirements-from-nf-core)
-  * [1.3. Requirements for integrating with IRIDA Next](#13-requirements-for-integrating-with-irida-next)
-  * [1.4. Other requirements](#14-other-requirements)
+  - [1.1. Developing a pipeline to contribute to nf-core](#11-developing-a-pipeline-to-contribute-to-nf-core)
+  - [1.2. Developing a pipeline which won't be contributed to nf-core](#12-developing-a-pipeline-which-wont-be-contributed-to-nf-core)
+    - [1.2.1. Requirements from nf-core](#121-requirements-from-nf-core)
+  - [1.3. Requirements for integrating with IRIDA Next](#13-requirements-for-integrating-with-irida-next)
+  - [1.4. Other requirements](#14-other-requirements)
 - [2. Input](#2-input)
-  * [2.1. Default samplesheet](#21-default-samplesheet)
-  * [2.2. Types of input data](#22-types-of-input-data)
-    + [2.2.1. Sample identifier](#221-sample-identifier)
-    + [2.2.2. Input files](#222-input-files)
+  - [2.1. Default samplesheet](#21-default-samplesheet)
+  - [2.2. Types of input data](#22-types-of-input-data)
+    - [2.2.1. Sample identifier](#221-sample-identifier)
+    - [2.2.2. Input files](#222-input-files)
       - [2.2.2.1. Example sample input files](#2221-example-sample-input-files)
-    + [2.2.3. Metadata input types](#223-metadata-input-types)
+    - [2.2.3. Metadata input types](#223-metadata-input-types)
       - [2.2.3.1. Example metadata input types](#2231-example-metadata-input-types)
-  * [2.3. Defining the samplesheet structure for a pipeline](#23-defining-the-samplesheet-structure-for-a-pipeline)
-    + [2.3.1. Defining sample identifiers in IRIDA Next](#231-defining-sample-identifiers-in-irida-next)
-    + [2.3.2. Defining selection of input files in IRIDA Next](#232-defining-selection-of-input-files-in-irida-next)
+  - [2.3. Defining the samplesheet structure for a pipeline](#23-defining-the-samplesheet-structure-for-a-pipeline)
+    - [2.3.1. Defining sample identifiers in IRIDA Next](#231-defining-sample-identifiers-in-irida-next)
+    - [2.3.2. Defining selection of input files in IRIDA Next](#232-defining-selection-of-input-files-in-irida-next)
       - [2.3.2.1. Example samplesheet and JSON schema for an assembly](#2321-example-samplesheet-and-json-schema-for-an-assembly)
-    + [2.3.3. Defining selection of input metadata in IRIDA Next](#233-defining-selection-of-input-metadata-in-irida-next)
+    - [2.3.3. Defining selection of input metadata in IRIDA Next](#233-defining-selection-of-input-metadata-in-irida-next)
       - [2.3.3.1. Example samplesheet and JSON schema for a metadata value](#2331-example-samplesheet-and-json-schema-for-a-metadata-value)
 - [3. Parameters](#3-parameters)
 - [4. Output](#4-output)
-  * [4.1. Files](#41-files)
-  * [4.2. IRIDA Next JSON](#42-irida-next-json)
-    + [4.2.1. Minimal example](#421-minimal-example)
-    + [4.2.2. Complete example](#422-complete-example)
-    + [4.2.3. Output files](#423-output-files)
+  - [4.1. Files](#41-files)
+  - [4.2. IRIDA Next JSON](#42-irida-next-json)
+    - [4.2.1. Minimal example](#421-minimal-example)
+    - [4.2.2. Complete example](#422-complete-example)
+    - [4.2.3. Output files](#423-output-files)
       - [4.2.3.1. global](#4231-global)
       - [4.2.3.2. samples](#4232-samples)
-    + [4.2.4. Metadata](#424-metadata)
-    + [4.2.5. Creating the IRIDA Next JSON integration file](#425-creating-the-irida-next-json-integration-file)
+    - [4.2.4. Metadata](#424-metadata)
+    - [4.2.5. Creating the IRIDA Next JSON integration file](#425-creating-the-irida-next-json-integration-file)
 - [5. Modules](#5-modules)
-  * [5.1. nf-core modules](#51-nf-core-modules)
-  * [5.2. Local modules](#52-local-modules)
-    + [5.2.1. Module software requirements](#521-module-software-requirements)
+  - [5.1. nf-core modules](#51-nf-core-modules)
+  - [5.2. Local modules](#52-local-modules)
+    - [5.2.1. Module software requirements](#521-module-software-requirements)
 - [6. Resource requirements](#6-resource-requirements)
-  * [6.1. Process resource label](#61-process-resource-label)
-    + [6.1.1. Accepted resource labels](#611-accepted-resource-labels)
-  * [6.2. Tuning resource limits with parameters](#62-tuning-resource-limits-with-parameters)
+  - [6.1. Process resource label](#61-process-resource-label)
+    - [6.1.1. Accepted resource labels](#611-accepted-resource-labels)
+  - [6.2. Tuning resource limits with parameters](#62-tuning-resource-limits-with-parameters)
 - [7. Testing](#7-testing)
-  * [7.1. Nextflow test profile](#71-nextflow-test-profile)
-  * [7.2. Unit/integration tests](#72-unitintegration-tests)
+  - [7.1. Nextflow test profile](#71-nextflow-test-profile)
+  - [7.2. Unit/integration tests](#72-unitintegration-tests)
 - [8. Executing pipelines](#8-executing-pipelines)
-  * [8.1. Standalone execution](#81-standalone-execution)
-  * [8.2. Execution via GA4GE WES](#82-execution-via-ga4ge-wes)
+  - [8.1. Standalone execution](#81-standalone-execution)
+  - [8.2. Execution via GA4GE WES](#82-execution-via-ga4ge-wes)
+  - [8.3. Running pipelines in a local instance of IRIDA Next](#83-running-pipelines-in-a-local-instance-of-irida-next)
 - [9. Resources](#9-resources)
-  * [9.1. Pipeline development tutorial](#91-pipeline-development-tutorial)
-  * [9.2. List of pipelines](#92-list-of-pipelines)
-  * [9.3. Other resources](#93-other-resources)
+  - [9.1. Pipeline development tutorial](#91-pipeline-development-tutorial)
+  - [9.2. List of pipelines](#92-list-of-pipelines)
+  - [9.3. Other resources](#93-other-resources)
 - [10. Future pipeline integration ideas](#10-future-pipeline-integration-ideas)
 - [11. Security practices](#11-security-practices)
-  * [11.1. Automated repository scanning (recommendations)](#111-automated-repository-scanning-recommendations)
+  - [11.1. Automated repository scanning (recommendations)](#111-automated-repository-scanning-recommendations)
 - [12. Publishing guidelines](#12-publishing-guidelines)
 - [13. Legal](#13-legal)
 
@@ -63,8 +64,8 @@ This document describes the specification for developing [IRIDA Next][irida-next
 
 IRIDA Next pipelines attempt to follow as much as possible the [nf-core][] guidelines for development pipelines. As a preliminatry first step prior to developing pipelines in IRIDA Next, **please read through the following documentation:**
 
-* [Nf-core guidelines][nf-core-guidelines]
-* [Nf-core adding a new pipeline][nf-core-add-pipeline]
+- [Nf-core guidelines][nf-core-guidelines]
+- [Nf-core adding a new pipeline][nf-core-add-pipeline]
 
 While we do follow nf-core as closely as possible, there are a number of differences or additions we make for integrating pipelines into IRIDA Next. Hence, some of the nf-core requirements may not apply if you do not intend to contribute the pipeline to nf-core.
 
@@ -78,59 +79,62 @@ If, instead, the pipeline won't be contributed to nf-core, then only the followi
 
 ### 1.2.1. Requirements from nf-core
 
-* [ ] Nextflow: Workflows must be built using Nextflow.
-* [ ] [Workflow name](https://nf-co.re/docs/contributing/guidelines/requirements/workflow_name): Names should be lower case and without punctuation.
-* [ ] [Use the template](https://nf-co.re/docs/contributing/guidelines/requirements/use_the_template): All nf-core pipelines must be built using the nf-core template.
-* [ ] [Software license](https://nf-co.re/docs/contributing/guidelines/requirements/mit_license): Pipelines must open source, released with the MIT license.
-* [ ] [Docker support](https://nf-co.re/docs/contributing/guidelines/requirements/docker): Software must be bundled using Docker and versioned.
-* [ ] [Continuous integration testing](https://nf-co.re/docs/contributing/guidelines/requirements/ci_testing): Pipelines must run CI tests.
-* [ ] [Semantic versioning](https://nf-co.re/docs/contributing/guidelines/requirements/semantic_versioning): Pipelines must use stable release tags.
-* [ ] [Standardised parameters](https://nf-co.re/docs/contributing/guidelines/requirements/parameters): Strive to have standardised usage.
-* [ ] [Single command](https://nf-co.re/docs/contributing/guidelines/requirements/single_command): Pipelines should run in a single command.
-* [ ] [Keywords](https://nf-co.re/docs/contributing/guidelines/requirements/keywords): Excellent documentation and GitHub repository keywords.
-* [ ] [Pass lint tests](https://nf-co.re/docs/contributing/guidelines/requirements/linting): The pipeline must not have any failures in the nf-core lint tests.
-    * *Note: It is possible to ignore some of the default nf-core linting with a [lint configuration file](https://nf-co.re/tools#linting-config).*
-* [ ] [Credits and Acknowledgements](https://nf-co.re/docs/contributing/guidelines/requirements/acknowledgements): Pipelines must properly acknowledge prior work.
-* [ ] [Minimum inputs](https://nf-co.re/docs/contributing/guidelines/requirements/minimum_inputs): Pipelines should be able to run with as little input as possible.
+- [ ] Nextflow: Workflows must be built using Nextflow.
+- [ ] [Workflow name](https://nf-co.re/docs/contributing/guidelines/requirements/workflow_name): Names should be lower case and without punctuation.
+- [ ] [Use the template](https://nf-co.re/docs/contributing/guidelines/requirements/use_the_template): All nf-core pipelines must be built using the nf-core template.
+- [ ] [Software license](https://nf-co.re/docs/contributing/guidelines/requirements/mit_license): Pipelines must open source, released with the MIT license.
+- [ ] [Docker support](https://nf-co.re/docs/contributing/guidelines/requirements/docker): Software must be bundled using Docker and versioned.
+- [ ] [Continuous integration testing](https://nf-co.re/docs/contributing/guidelines/requirements/ci_testing): Pipelines must run CI tests.
+- [ ] [Semantic versioning](https://nf-co.re/docs/contributing/guidelines/requirements/semantic_versioning): Pipelines must use stable release tags.
+- [ ] [Standardised parameters](https://nf-co.re/docs/contributing/guidelines/requirements/parameters): Strive to have standardised usage.
+- [ ] [Single command](https://nf-co.re/docs/contributing/guidelines/requirements/single_command): Pipelines should run in a single command.
+- [ ] [Keywords](https://nf-co.re/docs/contributing/guidelines/requirements/keywords): Excellent documentation and GitHub repository keywords.
+- [ ] [Pass lint tests](https://nf-co.re/docs/contributing/guidelines/requirements/linting): The pipeline must not have any failures in the nf-core lint tests.
+  - _Note: It is possible to ignore some of the default nf-core linting with a [lint configuration file](https://nf-co.re/tools#linting-config)._
+- [ ] [Credits and Acknowledgements](https://nf-co.re/docs/contributing/guidelines/requirements/acknowledgements): Pipelines must properly acknowledge prior work.
+- [ ] [Minimum inputs](https://nf-co.re/docs/contributing/guidelines/requirements/minimum_inputs): Pipelines should be able to run with as little input as possible.
 
- The following are modified nf-core requirements:
- * [ ] [Bundled documentation](https://nf-co.re/docs/contributing/guidelines/requirements/docs): Pipeline documentation should be provided within the `README.md`, `docs/usage.md` and `docs/output.md` files. Note that documentation does not need to be hosted on the nf-core website (unless the pipeline is meant to be contributed to nf-core).
- * [ ] [Use nf-core git branches](https://nf-co.re/docs/contributing/guidelines/requirements/git_branches): Use `main` (instead of `master`), `dev` and `TEMPLATE`.
-     
- The following are additional requirements for [using nf-core components outside of nf-core][nf-core-outside-nf-core].
- * [ ] [Acknowledging nf-core](https://nf-co.re/docs/contributing/tutorials/unofficial_pipelines#acknowledging-nf-core): Please add an acknowledgement statement to the pipeline `README.md` for nf-core.
- * [ ] [Removing nf-core only branding](https://nf-co.re/docs/contributing/tutorials/unofficial_pipelines#removing-nf-core-only-branding): Please remove any nf-core only branding from your repository.
+The following are modified nf-core requirements:
+
+- [ ] [Bundled documentation](https://nf-co.re/docs/contributing/guidelines/requirements/docs): Pipeline documentation should be provided within the `README.md`, `docs/usage.md` and `docs/output.md` files. Note that documentation does not need to be hosted on the nf-core website (unless the pipeline is meant to be contributed to nf-core).
+- [ ] [Use nf-core git branches](https://nf-co.re/docs/contributing/guidelines/requirements/git_branches): Use `main` (instead of `master`), `dev` and `TEMPLATE`.
+
+The following are additional requirements for [using nf-core components outside of nf-core][nf-core-outside-nf-core].
+
+- [ ] [Acknowledging nf-core](https://nf-co.re/docs/contributing/tutorials/unofficial_pipelines#acknowledging-nf-core): Please add an acknowledgement statement to the pipeline `README.md` for nf-core.
+- [ ] [Removing nf-core only branding](https://nf-co.re/docs/contributing/tutorials/unofficial_pipelines#removing-nf-core-only-branding): Please remove any nf-core only branding from your repository.
 
 ## 1.3. Requirements for integrating with IRIDA Next
 
 Whether the pipeline you develop is intended to be contributed to nf-core or not, the following are additional requirements for integrating a pipeline with IRIDA Next. These may overlap with existing nf-core and Nextflow standards.
 
-* [ ] [Input data using samplesheet and schema](#input): Please use a CSV samplesheet for referencing input data, where the structure of the CSV file is described in an `assets/schema_input.json` file. The JSON schema file will be used to render an interface in IRIDA Next for selecting and sending input data to be executed by a pipeline.
-* [ ] [Parameters described in nextflow.config and nextflow_schema.json](#parameters): Please describe parameters for the pipeline in the `nextflow.config` and `nextflow_schema.json` file. The JSON schema file will be used by IRIDA Next to render an interface for selecting parameters to pass to the pipeline.
-* [ ] [Output a JSON file describing data to load into IRIDA Next](#output): Please write an `output/iridanext.output.json.gz` file which describes the data to be loaded and stored within IRIDA Next (both files and metadata).
-* [ ] [Describe resource requirements for each module](#resource-requirements): Please describe resource requirements using only the labels described in the above link.
+- [ ] [Input data using samplesheet and schema](#input): Please use a CSV samplesheet for referencing input data, where the structure of the CSV file is described in an `assets/schema_input.json` file. The JSON schema file will be used to render an interface in IRIDA Next for selecting and sending input data to be executed by a pipeline.
+- [ ] [Parameters described in nextflow.config and nextflow_schema.json](#parameters): Please describe parameters for the pipeline in the `nextflow.config` and `nextflow_schema.json` file. The JSON schema file will be used by IRIDA Next to render an interface for selecting parameters to pass to the pipeline.
+- [ ] [Output a JSON file describing data to load into IRIDA Next](#output): Please write an `output/iridanext.output.json.gz` file which describes the data to be loaded and stored within IRIDA Next (both files and metadata).
+- [ ] [Describe resource requirements for each module](#resource-requirements): Please describe resource requirements using only the labels described in the above link.
 
 ## 1.4. Other requirements
 
 The following are other requirements for developing pipelines.
 
-* [ ] [Software security and vulnerabilities](#security): Please maintain good software security practices with pipeline code to be published. In particular, never store plain text passwords, API keys, ssh keys, or otherwise confidential information in software/pipelines which are distributed publicly. You may consider referring to the [GitHub Code Security](https://docs.github.com/en/code-security) documentation for securing your repository.
+- [ ] [Software security and vulnerabilities](#security): Please maintain good software security practices with pipeline code to be published. In particular, never store plain text passwords, API keys, ssh keys, or otherwise confidential information in software/pipelines which are distributed publicly. You may consider referring to the [GitHub Code Security](https://docs.github.com/en/code-security) documentation for securing your repository.
 
 <a name="input"></a>
+
 # 2. Input
 
 Input for pipelines follows the [nfcore parameters][nfcore-parameters] specification. In particular, input data will be passed via a CSV file, where each row represents data that can be processed independently through the pipeline (commonly a sample). The input CSV file is passed using the `--input` parameter to a pipeline (e.g., `--input samples.csv`).
 
 Within Nextflow, this `--input samples.csv` file is converted into a channel where each element within the channel corresponds to a single row of the input CSV file (e.g., each element in the channel contains the sample identifier and the input fastq files). This conversion from the input CSV file to a channel of tuples is performed using the [nf-validation fromSamplesheet][] function.
 
-*Note: Commonly this `--input` CSV file is referred to as a samplesheet since it's often used to store data associated with a single sample, but it could be used to store other types of data as well.*
+_Note: Commonly this `--input` CSV file is referred to as a samplesheet since it's often used to store data associated with a single sample, but it could be used to store other types of data as well._
 
 ## 2.1. Default samplesheet
 
 The default samplesheet looks like:
 
 | sample  | fastq_1      | fastq_2      |
-|---------|--------------|--------------|
+| ------- | ------------ | ------------ |
 | SampleA | file_1.fq.gz | file_2.fq.gz |
 
 ## 2.2. Types of input data
@@ -148,9 +152,9 @@ An input file consists of some data stored within a file external to the CSV fil
 #### 2.2.2.1. Example sample input files
 
 | sample  | fastq_1 **(an input file)** | fastq_2 **(another input file)** | assembly **(another input file)** |
-|---------|--------------|--------------|----|
-| SampleA | file_1.fq.gz | file_2.fq.gz | |
-| SampleB | | | assembly.fa.gz |
+| ------- | --------------------------- | -------------------------------- | --------------------------------- |
+| SampleA | file_1.fq.gz                | file_2.fq.gz                     |                                   |
+| SampleB |                             |                                  | assembly.fa.gz                    |
 
 ### 2.2.3. Metadata input types
 
@@ -158,9 +162,9 @@ A metadata input type is something that can be represented within a cell in a CS
 
 #### 2.2.3.1. Example metadata input types
 
-| sample | organism **(metadata input)** | fastq_1      | fastq_2      |
-|----------------------------|-----------------------------|--------------|--------------|
-| SampleA                    | Salmonella enterica         | file_1.fq.gz | file_2.fq.gz |
+| sample  | organism **(metadata input)** | fastq_1      | fastq_2      |
+| ------- | ----------------------------- | ------------ | ------------ |
+| SampleA | Salmonella enterica           | file_1.fq.gz | file_2.fq.gz |
 
 ## 2.3. Defining the samplesheet structure for a pipeline
 
@@ -175,7 +179,7 @@ For custom types of data for a pipeline, please modify this JSON schema by modif
 Sample identifiers from IRIDA Next are placed into an input samplesheet.csv for a Nextflow pipeline in the `sample` column. That is, if the expected samplesheet structure is as below:
 
 **samplesheet.csv**
-| sample  |
+| sample |
 |---------|
 | SampleA |
 | SampleB |
@@ -183,19 +187,20 @@ Sample identifiers from IRIDA Next are placed into an input samplesheet.csv for 
 Then the following should be defined in the `assets/schema_input.json`:
 
 **assets/schema_input.json**
+
 ```json
 {
-    // ...
-    "items": {
-        "type": "object",
-        "properties": {
-            "sample": {
-                "type": "string",
-                "pattern": "^\\S+$",
-                "meta": ["id"]
-            }
-        }
+  // ...
+  "items": {
+    "type": "object",
+    "properties": {
+      "sample": {
+        "type": "string",
+        "pattern": "^\\S+$",
+        "meta": ["id"]
+      }
     }
+  }
 }
 ```
 
@@ -205,17 +210,17 @@ Here, `"meta": ["id"]` is used internally by Nextflow and the nf-validation plug
 
 In order to configure a pipeline to select input files from IRIDA Next, please make sure the samplesheet `assets/schema_input.json` for the column contains the following keywords:
 
-* _`"format": "file-type"`_: This is used by IRIDA Next to indicate that a particular column/field in the samplesheet should be a file associated with a sample. This is also by the nf-validation plugin in Nextflow to validate the respective column as containing a file path and check for existence of this file. See the [nf-validation schema specification](https://nextflow-io.github.io/nf-validation/latest/nextflow_schema/nextflow_schema_specification/#format) for more details.
-* _`"pattern": ".*.f(ast)?q(.gz)?$"`_: This is used by IRIDA Next to constrain what sorts of files attached to a sample can be used as input to this column (e.g., reads in fastq format, assemblies in fasta format, etc). The value here is a regular expression for a file path. On the Nextflow nf-validation side, this is used to also validate the input paths in the samplesheet are as expected (i.e., they match the defined regular expression).
-* _`fastq_1` and `fastq_2` for **paired/single-end input fastqs**_: The samplesheet column names `fastq_1` and `fastq_2` should be used to indicate input paired/single-end fastq files. Using these column names will mean IRIDA Next will make sure the pairs of reads are properly paired (i.e., if there's multiple read sets attached to a sample it will guarantee that only pairs of reads associated with each other will be allowed as input to the pipeline).
-* _Other input files (other than paired/single-end fastqs) can use any other column name._
+- _`"format": "file-type"`_: This is used by IRIDA Next to indicate that a particular column/field in the samplesheet should be a file associated with a sample. This is also by the nf-validation plugin in Nextflow to validate the respective column as containing a file path and check for existence of this file. See the [nf-validation schema specification](https://nextflow-io.github.io/nf-validation/latest/nextflow_schema/nextflow_schema_specification/#format) for more details.
+- _`"pattern": ".*.f(ast)?q(.gz)?$"`_: This is used by IRIDA Next to constrain what sorts of files attached to a sample can be used as input to this column (e.g., reads in fastq format, assemblies in fasta format, etc). The value here is a regular expression for a file path. On the Nextflow nf-validation side, this is used to also validate the input paths in the samplesheet are as expected (i.e., they match the defined regular expression).
+- _`fastq_1` and `fastq_2` for **paired/single-end input fastqs**_: The samplesheet column names `fastq_1` and `fastq_2` should be used to indicate input paired/single-end fastq files. Using these column names will mean IRIDA Next will make sure the pairs of reads are properly paired (i.e., if there's multiple read sets attached to a sample it will guarantee that only pairs of reads associated with each other will be allowed as input to the pipeline).
+- _Other input files (other than paired/single-end fastqs) can use any other column name._
 
 #### 2.3.2.1. Example samplesheet and JSON schema for an assembly
 
 As an example, if a pipeline is intended to take as input an assembled genome (in fasta format) for each sample, the following would be how the samplesheet could be defined:
 
 **samplesheet.csv**
-| sample  | assembly    |
+| sample | assembly |
 |---------|-------------|
 | SAMPLE1 | s1.fasta.gz |
 | SAMPLE2 | s2.fasta.gz |
@@ -223,24 +228,25 @@ As an example, if a pipeline is intended to take as input an assembled genome (i
 The following would be an example structure found within the `assets/schema_input.json` file:
 
 **assets/schema_input.json**
+
 ```json
 {
-    // ...
-    "items": {
-        "type": "object",
-        "properties": {
-            "sample": {
-                "type": "string",
-                "pattern": "^\\S+$",
-                "meta": ["id"]
-            },
-            "assembly": {
-                "type": "string",
-                "format": "file-path",
-                "pattern": "^\\S+\\.f(ast)?a(\\.gz)?$"
-            }
-        }
+  // ...
+  "items": {
+    "type": "object",
+    "properties": {
+      "sample": {
+        "type": "string",
+        "pattern": "^\\S+$",
+        "meta": ["id"]
+      },
+      "assembly": {
+        "type": "string",
+        "format": "file-path",
+        "pattern": "^\\S+\\.f(ast)?a(\\.gz)?$"
+      }
     }
+  }
 }
 ```
 
@@ -248,45 +254,47 @@ The following would be an example structure found within the `assets/schema_inpu
 
 In order to configure a pipeline to select input metadata from IRIDA Next, please make sure the samplesheet `assets/schema_input.json` for the column contains **does not** contain `"format": "file-path"`. That is:
 
-* _**Does not** contain `"format": "file-path"`_: This is the key part of defining selection of metadata for IRIDA Next (the assumption being anything that is not a file is metadata).
-* _**Does not** use column names `sample`, `fastq_1`, or `fastq_2`_: These are reserved column names in a samplesheet for IRIDA Next.
-* _The column name in samplesheet should match metadata field_: IRIDA Next will attempt to automatically select metadata for a pipeline based on the column name in the input samplesheet for a pipeline. That is, if the samplesheet names a column `organism`, then IRIDA Next will attempt to auto-populate the `organism` metadata field from the sample data when running the pipline. Users have the option in IRIDA Next to override the selected metadata key when running a pipeline (e.g., if the metadata field in IRIDA Next to use is named *species* instead).
+- _**Does not** contain `"format": "file-path"`_: This is the key part of defining selection of metadata for IRIDA Next (the assumption being anything that is not a file is metadata).
+- _**Does not** use column names `sample`, `fastq_1`, or `fastq_2`_: These are reserved column names in a samplesheet for IRIDA Next.
+- _The column name in samplesheet should match metadata field_: IRIDA Next will attempt to automatically select metadata for a pipeline based on the column name in the input samplesheet for a pipeline. That is, if the samplesheet names a column `organism`, then IRIDA Next will attempt to auto-populate the `organism` metadata field from the sample data when running the pipline. Users have the option in IRIDA Next to override the selected metadata key when running a pipeline (e.g., if the metadata field in IRIDA Next to use is named _species_ instead).
 
 #### 2.3.3.1. Example samplesheet and JSON schema for a metadata value
 
 As an example, if a pipeline is intended to take as input a metadata value, the following would be how the samplesheet could be defined:
 
 **samplesheet.csv**
-| sample  | organism    |
+| sample | organism |
 |---------|-------------|
-| SAMPLE1 | Salmonella  |
-| SAMPLE2 | Salmonella  |
+| SAMPLE1 | Salmonella |
+| SAMPLE2 | Salmonella |
 
 The following would be an example structure found within the `assets/schema_input.json` file:
 
 **assets/schema_input.json**
+
 ```json
 {
-    // ...
-    "items": {
-        "type": "object",
-        "properties": {
-            "sample": {
-                "type": "string",
-                "pattern": "^\\S+$",
-                "meta": ["id"]
-            },
-            "organism": {
-                "type": "string"
-            }
-        }
+  // ...
+  "items": {
+    "type": "object",
+    "properties": {
+      "sample": {
+        "type": "string",
+        "pattern": "^\\S+$",
+        "meta": ["id"]
+      },
+      "organism": {
+        "type": "string"
+      }
     }
+  }
 }
 ```
 
 IRIDA Next will attempt to autopopulate the `organism` column in the samplesheet from the `oranism` metadata field for samples, but provides a mechanism to override the selected metadata field for samples.
 
 <a name="parameters"></a>
+
 # 3. Parameters
 
 Parameters within a pipeline are defined in the `nextflow.config` file (under the `params` scope), and then the `nextflow_schema.json` file is updated to contain the parameters by running `nf-core schema build`. This is described in the [nf-core contributing to pipelines][nf-core-contributing-to-pipelines] documentation.
@@ -305,6 +313,7 @@ params {
 The full set of parameters can be found in <https://github.com/phac-nml/iridanext-example-nf/blob/main/nextflow.config>.
 
 <a name="output"></a>
+
 # 4. Output
 
 ## 4.1. Files
@@ -320,15 +329,16 @@ An `output/iridanext.output.json.gz` file will be written, which specifies the f
 A minimal example of the `iridanext.output.json.gz` is:
 
 **output/iridanext.output.json.gz**:
+
 ```json
 {
-    "files": {
-        "global": [],
-        "samples": {}
-    },
-    "metadata": {
-        "samples": {}
-    }
+  "files": {
+    "global": [],
+    "samples": {}
+  },
+  "metadata": {
+    "samples": {}
+  }
 }
 ```
 
@@ -339,34 +349,33 @@ This describes the minimal keys and structure for the JSON file.
 A complete example of this file with more data filled in is as below.
 
 **output/iridanext.output.json.gz**:
+
 ```json
 {
-    "files": {
-        "global": [
-            {"path": "summary.txt"}
-        ],
-        "samples": {
-            "SampleA": [
-                {"path": "assembly/assembly.fa.gz"},
-                {"path": "assembly/annotation.gbk.gz"}
-            ]
-        }
-    },
-    "metadata": {
-        "samples": {
-            "SampleA": {
-                "organism": "Salmonella enterica",
-
-                "amr.1.gene": "x",
-                "amr.1.start": 1234,
-                "amr.1.end": 5678,
-                
-                "amr.2.gene": "y",
-                "amr.2.start": 1,
-                "amr.2.end": 2
-            }
-        }
+  "files": {
+    "global": [{ "path": "summary.txt" }],
+    "samples": {
+      "SampleA": [
+        { "path": "assembly/assembly.fa.gz" },
+        { "path": "assembly/annotation.gbk.gz" }
+      ]
     }
+  },
+  "metadata": {
+    "samples": {
+      "SampleA": {
+        "organism": "Salmonella enterica",
+
+        "amr.1.gene": "x",
+        "amr.1.start": 1234,
+        "amr.1.end": 5678,
+
+        "amr.2.gene": "y",
+        "amr.2.start": 1,
+        "amr.2.end": 2
+      }
+    }
+  }
 }
 ```
 
@@ -434,11 +443,13 @@ This adds support for a custom `iridanext` scoped block as part of the Nextflow 
 The `iridanext` configuration values can be added anywhere within the Nextflow configuration files. One way to organize the configuration is to create a separate `conf/iridanext.config` file in the pipeline with the IRIDA Next configuration, and include this file in the `nextflow.config`.
 
 **nextflow.config**
+
 ```conf
 includeConfig 'conf/iridanext.config'
 ```
 
 **conf/iridanext.config**
+
 ```conf
 iridanext {
     enabled = true
@@ -493,6 +504,7 @@ container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity
 For more information, see the [Nextflow containers][] documentation and the [nf-core modules software requirements][] guide.
 
 <a name="resource-requirements"></a>
+
 # 6. Resource requirements
 
 To define computational resource requirements for each process, we will follow the [nf-core resource][nf-core-module-resource] standards as much as possible, where resources are adjusted by a `label` in each `process` of a pipeline. The pipeline developer will be responsible for setting an appropriate `label` in each process of the NextFlow pipeline to appropriatly define required resources. In addition, the developer is responsible for tuning any resources defined in the `config/base.config` file, as described in the [nf-core tuning workflow resources][] documentation.
@@ -513,11 +525,11 @@ process name {
 
 The following labels will be accepted:
 
-* `proccess_single`
-* `process_low`
-* `process_medium`
-* `process_high`
-* `process_very_high`: This label is an addition over those provided by nf-core to be used for situations where a process needs a lot of resources beyond `process_high`.
+- `proccess_single`
+- `process_low`
+- `process_medium`
+- `process_high`
+- `process_very_high`: This label is an addition over those provided by nf-core to be used for situations where a process needs a lot of resources beyond `process_high`.
 
 ## 6.2. Tuning resource limits with parameters
 
@@ -569,27 +581,44 @@ Where `inputsheet.csv` is the CSV file containing samples (or other input data) 
 
 ```json
 {
-    "workflow_params": {
-        "--input": "https://url-to-input.csv",
-        "-r": "REVISION",
-        "[PARAMETERS]": "[PARAMETER VALUES]"
-    },
-    "workflow_type": "DSL2",
-    "workflow_type_version": "22.10.7",
-    "tags": {
-        "createdBy": "Test",
-        "group": "Test"
-    },
-    "workflow_engine_parameters": {
-        "engine": "nextflow",
-        "execute_loc": "azure"
-    },
-    "workflow_url": "https://github.com/phac-nml/iridanext-example-nf",
-    "workflow_attachment": ""
+  "workflow_params": {
+    "--input": "https://url-to-input.csv",
+    "-r": "REVISION",
+    "[PARAMETERS]": "[PARAMETER VALUES]"
+  },
+  "workflow_type": "DSL2",
+  "workflow_type_version": "22.10.7",
+  "tags": {
+    "createdBy": "Test",
+    "group": "Test"
+  },
+  "workflow_engine_parameters": {
+    "engine": "nextflow",
+    "execute_loc": "azure"
+  },
+  "workflow_url": "https://github.com/phac-nml/iridanext-example-nf",
+  "workflow_attachment": ""
 }
 ```
 
 Here, parameters are specified by key/value pairs under `workflow_params` and the location of the workflow code is given in `workflow_url`. See [WES RunWorkflow][wes-run-workflow] for more details.
+
+## 8.3. Running pipelines in a local instance of IRIDA Next
+
+For detailed instructions and configuration options, please refer to the the guide for setting up a local instance of IRIDA Next:
+
+**[IRIDANext_LocalGuide.md](docs/IRIDANext_LocalGuide.md)**
+
+The guide includes step-by-step instructions for installing required dependencies, setting up the development environment, and configuring the necessary services.
+
+- **Summary of Installation Steps**
+  - Install asdf: A tool version manager for managing dependencies.
+  - Install Required Plugins: Node.js, pnpm, Ruby, and Postgres using asdf.
+  - Setup and Start Postgres Server: Create a new role and configure the development database.
+  - Configure Environment: Set up credentials and active storage for IRIDA Next.
+  - Setup Sapporo: Install and configure Sapporo for managing GA4GH WES instances.
+  - Register Pipelines: Add and register Nextflow pipelines in IRIDA Next.
+  - Run Local Instance: Start the web application and access it via a web browser.
 
 # 9. Resources
 
@@ -605,17 +634,18 @@ Other pipelines are listed at <https://github.com/phac-nml/nf-pipelines>.
 
 ## 9.3. Other resources
 
-* [PHA4GE proposed pipeline standards][pha4ge-pipeline-standards]: Proposed pipeline standards from the PHA4GE Bioinformatics Pipelines & Visualization Working Group
-* [Government of Canada: Guide for Publishing Open Source Code][gov-canada-open-source-software]
-* [nfcore pipeline schema][nfcore-pipeline-schema]
-* [nfcore parameters][nfcore-parameters]
-* [GA4GH Workflow Execution Service][ga4gh-wes]
+- [PHA4GE proposed pipeline standards][pha4ge-pipeline-standards]: Proposed pipeline standards from the PHA4GE Bioinformatics Pipelines & Visualization Working Group
+- [Government of Canada: Guide for Publishing Open Source Code][gov-canada-open-source-software]
+- [nfcore pipeline schema][nfcore-pipeline-schema]
+- [nfcore parameters][nfcore-parameters]
+- [GA4GH Workflow Execution Service][ga4gh-wes]
 
 # 10. Future pipeline integration ideas
 
 Additional ideas for integrating pipelines in the future can be found in the [IRIDA Next pipeline integration ideas][iridanext-ideas] document.
 
 <a name="security"></a>
+
 # 11. Security practices
 
 Please maintain good software security practices with pipeline code to be published. In particular, never store plain text passwords, API keys, ssh keys, or otherwise confidential information in software/pipelines which are distributed publicly.
@@ -624,9 +654,9 @@ Please maintain good software security practices with pipeline code to be publis
 
 There exist automated tools to aid in maintining secure code and identifying potential issues. The [GitHub Securing your repository][github-secure-repository] documentation provides detailed information on how to secure your GitHub repository, which includes automated scanning. In particular, some recommendations include:
 
-* [Enable secret scanning][github-secret-scanning]: This will scan code and issues for patterns potentially matching secrets (e.g., API keys) that should not be made public and provide alerts for anything that was found.
-* [Enable code scanning][github-codeql]: GitHub provides CodeQL for scanning code for potential vulnerabilities or errors in your code and providing recommended fixes. While this does not support the Nextflow language, other programming languages (e.g., Python) are supported.
-* [Enable dependabot][github-dependabot]: Dependabot scans for and provides alerts on insecure dependencies of your software. While [Nextflow is not directly supported by github][github-core-languages], this might be a service of use for other repositories or other code and dependencies managed within a pipeline.
+- [Enable secret scanning][github-secret-scanning]: This will scan code and issues for patterns potentially matching secrets (e.g., API keys) that should not be made public and provide alerts for anything that was found.
+- [Enable code scanning][github-codeql]: GitHub provides CodeQL for scanning code for potential vulnerabilities or errors in your code and providing recommended fixes. While this does not support the Nextflow language, other programming languages (e.g., Python) are supported.
+- [Enable dependabot][github-dependabot]: Dependabot scans for and provides alerts on insecure dependencies of your software. While [Nextflow is not directly supported by github][github-core-languages], this might be a service of use for other repositories or other code and dependencies managed within a pipeline.
 
 Enabling these services can be done directly on a GitHub repository in the **Settings > Code security and analysis** section.
 
