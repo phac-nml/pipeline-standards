@@ -304,7 +304,7 @@ _Download and run the [PHAC-NML Sapporo]() fork in dev docker mode. If docker pe
 
 ```bash
 cd ~/path/to/git/repos
-git clone git@github.com:phac-nml/sapporo-service.git
+git clone https://github.com/phac-nml/sapporo-service
 cd sapporo-service
 # This branch has a custom docker compose script for IRIDA Next
 git checkout irida-next
@@ -478,12 +478,12 @@ In order to update IRIDA Next the following steps can be taken:
 cd path/to/irida-next
 git fetch origin
 git pull origin main
-# Resolve any conflicts that arise with the pull, such as changes made to the `pipelines.json` file 
+# Resolve any conflicts that arise with the pull, such as changes made to the `pipelines.json` file
 ```
 
 You may need to repeat the installation of IRIDA Next dependencies and/or update the existing `asdf` plugins.
 
- - To update IRIDA Next dependencies: 
+- To update IRIDA Next dependencies:
 
 ```bash
 # Ensure newest bundler is installed
@@ -494,7 +494,7 @@ bundle && pnpm install
 bin/rails db:create db:migrate db:seed
 ```
 
-- If prompted to update plugins to new versions, check the `irida-next/.tool-versions` file and refer to the section [Installing the required IRIDA Next plugins](#installing-the-required-IRIDA-Next-plugins) 
+- If prompted to update plugins to new versions, check the `irida-next/.tool-versions` file and refer to the section [Installing the required IRIDA Next plugins](#installing-the-required-IRIDA-Next-plugins)
 
 _E.g._
 
@@ -509,6 +509,3 @@ asdf uninstall ruby <old-version>
 ```
 
 Make sure to rebuild and restart the Sapporo Docker container, restart the postgres server, and start IRIDA Next.
-
-
-
