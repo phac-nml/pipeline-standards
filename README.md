@@ -501,7 +501,65 @@ container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity
     'biocontainers/fastqc:0.11.9--0' }"
 ```
 
+For IRIDA Next Nextflow pipelines running in Azure and using Docker, the default container registry should be set to the publicly available `quay.io` registry in the `nextflow.config` file using the `docker.registry` parameter.
+
 For more information, see the [Nextflow containers][] documentation and the [nf-core modules software requirements][] guide.
+
+### 5.2.2 Configuring Module Software with Private Container Registries
+
+In some cases, you may want to use a private container registry instead of, or in addition to, a public container registry to define software requirements for Nextflow pipeline modules. For this purpose, we introduce the `--override_default_container_registry` parameter. This boolean parameter allows the Nextflow pipeline to override a default container registry with an alternative registry. By default, this parameter is set to `false`, and the default container registry, specified in the `nextflow.config` file, is used.
+
+To specify an alternative registry for a module, the `container` directive should incorporate a conditional check using the `params.override_default_container_registry` within a nested ternary operator in its closure.
+
+Below is an example of a `container` directive specifying the software requirements for a module in an IRIDA Next Nextflow pipeline:
+
+```
+container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+    'https://depot.galaxyproject.org/singularity/fastqc:0.11.9--0' :
+    (params.override_default_container_registry ? 'acrgspimages.io/biocontainers/fastqc:0.11.9--0' : 'biocontainers/fastqc:0.11.9--0') }"
+```
+
+In this example, when the `--override_default_container_registry` parameter is set to `true`, the default Docker registry (`quay.io`) is overridden, and the pipeline uses the GSP Azure container registry (`acrgspimages.io`) instead.
+
+When running on IRIDA Next, the Azure configuration file will automatically set the `--override_default_container_registry` parameter to `true` to ensure that the Azure container registry is used for any processes with the `container` directive conditional check.
+
+#### 5.2.2.1 Additional Configurations for Supporting the `--override_default_container_registry` Parameter
+
+To support the dynamic selection of container registries within IRIDA Next Nextflow pipeline modules when using the `--override_default_container_registry` parameter, the following additions need to be added to the `nextflow.config` and `nextflow_schema.json` files:
+
+**nextflow.config**
+
+Add the `override_default_container_registry` parameter to the `nextflow.config` file:
+
+```
+params {
+
+    // Override container registry for Docker in Azure
+    override_default_container_registry = false
+
+}
+```
+
+**nextflow_schema.json**
+
+Add the new parameter to the definition input/output properties in the `nextflow_schema.json` file:
+
+```
+{
+  "definitions": {
+    input_output_options": {
+      "properties" : {
+        "override_default_container_registry": {
+            "type": "boolean",
+            "description": "Determines whether to override the default Docker registry (quay.io) with the Azure private container registry (acrgspimages.io). Defaults to false, set to true in Azure configuration file for IRIDA Next.",
+            "fa_icon": "fas fa-question-circle",
+            "default": false
+        }
+      }
+    }
+  }
+}
+```
 
 <a name="resource-requirements"></a>
 
