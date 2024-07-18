@@ -39,6 +39,8 @@ This document describes the specification for developing [IRIDA Next][irida-next
   - [5.1. nf-core modules](#51-nf-core-modules)
   - [5.2. Local modules](#52-local-modules)
     - [5.2.1. Module software requirements](#521-module-software-requirements)
+    - [5.2.2 Configuring Module Software with Private Container Registries](#522-configuring-module-software-with-private-container-registries)
+      - [5.2.2.1 Additional Configurations for Supporting the `--override_default_container_registry` Parameter](#5221-additional-configurations-for-supporting-the---override_default_container_registry-parameter)
 - [6. Resource requirements](#6-resource-requirements)
   - [6.1. Process resource label](#61-process-resource-label)
     - [6.1.1. Accepted resource labels](#611-accepted-resource-labels)
