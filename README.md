@@ -521,7 +521,7 @@ container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity
 
 In this example, when the `--override_default_container_registry` parameter is set to `true`, the default Docker registry (`quay.io`) is overridden, and the pipeline uses the DockerHub container registry (`docker.io`) instead.
 
-When running on IRIDA Next, the Azure configuration file will automatically set the `--override_default_container_registry` parameter to `true` to ensure that thlternative registry can be used for any processes with the `container` directive conditional check.
+When running on IRIDA Next, the Azure configuration file will automatically set the `--override_default_container_registry` parameter to `true` to ensure that the alternative registry can be used for any processes with the `container` directive conditional check.
 
 #### 5.2.2.1 Additional Configurations for Supporting the `--override_default_container_registry` Parameter
 
