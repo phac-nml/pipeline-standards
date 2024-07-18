@@ -525,7 +525,11 @@ When running on IRIDA Next, the Azure configuration file will automatically set 
 
 #### 5.2.2.1 Additional Configurations for Supporting the `--override_default_container_registry` Parameter
 
-To support the dynamic selection of container registries within IRIDA Next Nextflow pipeline modules when using the `--override_default_container_registry` parameter, the following additions need to be added to the `nextflow.config` and `nextflow_schema.json` files:
+To support the dynamic selection of container registries within IRIDA Next Nextflow pipeline modules when using the `--override_default_container_registry` parameter, additional Nextflow configuration files will either need to be updated, or implemented.
+
+1. Either update the nextflow.config file to inlcude the `override_deafult_container_registry`, or add an optional configuration file that is passed to the pipeline
+
+- e.g., `nextflow run ... -c azure_configuration.config`
 
 **nextflow.config**
 
@@ -535,7 +539,7 @@ Add the `override_default_container_registry` parameter to the `nextflow.config`
 params {
 
     // Override default container registry
-    override_default_container_registry = false
+    override_default_container_registry = true
 
 }
 ```
@@ -553,7 +557,8 @@ Add the new parameter to the definition input/output properties in the `nextflow
             "type": "boolean",
             "description": "Determines whether to override the default Docker registry (quay.io) with an alternate container registry (e.g. docker.io). Defaults to false.",
             "fa_icon": "fas fa-question-circle",
-            "default": false
+            "hidden": true,
+            "default": true
         }
       }
     }
