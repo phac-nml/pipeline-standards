@@ -503,7 +503,11 @@ container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity
     'biocontainers/fastqc:0.11.9--0' }"
 ```
 
-For IRIDA Next Nextflow pipelines running in Azure and using Docker, the default container registry should be set to the publicly available `quay.io` registry in the `nextflow.config` file using the `docker.registry` parameter.
+Since IRIDA Next Nextflow pipelines aim to follow [nf-core](https://nf-co.re/docs/usage/getting_started/configuration#docker-registries) standards, the default container registry should be set to the publicly available `quay.io` registry in the `nextflow.config` file using the `docker.registry` parameter.
+
+```
+docker.registry = 'quay.io'
+```
 
 For more information, see the [Nextflow containers][] documentation and the [nf-core modules software requirements][] guide.
 
