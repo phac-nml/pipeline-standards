@@ -40,7 +40,7 @@ This document describes the specification for developing [IRIDA Next][irida-next
   - [5.2. Local modules](#52-local-modules)
     - [5.2.1. Module software requirements](#521-module-software-requirements)
     - [5.2.2 Configuring Module Software with Private Container Registries](#522-configuring-module-software-with-private-container-registries)
-      - [5.2.2.1 Additional Configurations for Supporting the `--override_default_container_registry` Parameter](#5221-additional-configurations-for-supporting-the---override_default_container_registry-parameter)
+      - [5.2.2.1 Additional Configurations for Supporting the `--override_configured_docker_registry` Parameter](#5221-additional-configurations-for-supporting-the---override_configured_docker_registry-parameter)
 - [6. Resource requirements](#6-resource-requirements)
   - [6.1. Process resource label](#61-process-resource-label)
     - [6.1.1. Accepted resource labels](#611-accepted-resource-labels)
@@ -523,27 +523,27 @@ This setting automatically prefixes each container name with the specified regis
 
 When the default registry is set to `quay.io`, containers are downloaded from `quay.io` by default (e.g., `biocontainers/fastqc:0.11.9--0` becomes `quay.io/biocontainers/fastqc:0.11.9--0`). This configuration can be problematic if the pipeline includes containers from multiple registries, such as `quay.io` and `docker.io`, since only one default registry can be configured at a time.
 
-Our chosen solution is to designate `quay.io` as the default container registry. To accommodate containers from alternative registries (e.g., `docker.io`), we introduce the `override_default_container_registry` parameter. This parameter directs the pipeline to remove the default prefix from the container name, ensuring proper download from the specified private or alternative container registry.
+Our chosen solution is to maintain nf-core standards and designate `quay.io` as the default `docker.registry`. To accommodate containers from alternative registries (e.g., `docker.io`), we introduce the `override_configured_docker_registry` parameter. This parameter directs the pipeline to remove the default prefix from the container name, ensuring proper download from the specified private or alternative container registry.
 
-To specify an alternative registry for a module, use the `container` directive with a conditional check using the `params.override_default_container_registry` within a nested ternary operator in its closure.
+To specify an alternative registry for a module, use the `container` directive with a conditional check using the `params.override_configured_docker_registry` within a nested ternary operator in its closure.
 
 Below is an example of a `container` directive specifying the software requirements for a module in an IRIDA Next Nextflow pipeline:
 
 ```
 container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
     'https://depot.galaxyproject.org/singularity/fastqc:0.11.9--0' :
-    (params.override_default_container_registry ? 'docker.io/biocontainers/fastqc:v0.11.9_cv8' : 'biocontainers/fastqc:0.11.9--0') }"
+    (params.override_configured_docker_registry ? 'docker.io/biocontainers/fastqc:v0.11.9_cv8' : 'biocontainers/fastqc:0.11.9--0') }"
 ```
 
-In this example, the `override_default_container_registry` parameter ensures the default Docker registry (`quay.io`) is overridden, allowing the pipeline to use the DockerHub container registry (`docker.io`) instead.
+In this example, the `override_configured_docker_registry` parameter ensures the default Docker registry (`quay.io`) is overridden, allowing the pipeline to use the DockerHub container registry (`docker.io`) instead.
 
-#### 5.2.2.1 Additional Configurations for Supporting the `--override_default_container_registry` Parameter
+#### 5.2.2.1 Additional Configurations for Supporting the `--override_configured_docker_registry` Parameter
 
-To enable dynamic selection of container registries within the IRIDA Next Nextflow pipeline modules when using the `--override_default_container_registry parameter`, additional Nextflow configuration files need to be updated or implemented.
+To enable dynamic selection of container registries within the IRIDA Next Nextflow pipeline modules when using the `--override_configured_docker_registry parameter`, additional Nextflow configuration files need to be updated or implemented.
 
 1. Update the `nextflow.config` File and Define the Parameter in the Schema
 
-   - Update the `nextflow.config file` to include the `override_default_container_registry parameter`, and add this new parameter to the `nextflow_schema.json` file:
+   - Update the `nextflow.config file` to include the `override_configured_docker_registry parameter`, and add this new parameter to the `nextflow_schema.json` file:
 
 **nextflow.config**:
 
@@ -551,7 +551,7 @@ To enable dynamic selection of container registries within the IRIDA Next Nextfl
 params {
 
     // Override default container registry
-    override_default_container_registry = true
+    override_configured_docker_registry = true
 
 }
 ```
@@ -563,7 +563,7 @@ params {
   "definitions": {
     input_output_options": {
       "properties" : {
-        "override_default_container_registry": {
+        "override_configured_docker_registry": {
             "type": "boolean",
             "description": "Determines whether to override the default Docker registry (quay.io) with an alternate container registry (e.g. docker.io). Defaults to false.",
             "fa_icon": "fas fa-question-circle",
@@ -578,7 +578,7 @@ params {
 
 2. Using an Optional Configuration File
 
-   - Alternatively, create an optional configuration file that includes the `override_default_container_registry` parameter with the desired default boolean value. Include this configuration file in the pipeline by using the `-c` option in commandline.
+   - Alternatively, create an optional configuration file that includes the `override_configured_docker_registry` parameter with the desired default boolean value. Include this configuration file in the pipeline by using the `-c` option in commandline.
 
 Example command:
 
@@ -586,7 +586,7 @@ Example command:
 nextflow run ... -c azure_configuration.config`
 ```
 
-This approach ensures that the `--override_default_container_registry` parameter is properly integrated and managed, allowing for flexible and dynamic container registry selection within your Nextflow pipeline.
+This approach ensures that the `--override_configured_docker_registry` parameter is properly integrated and managed, allowing for flexible and dynamic container registry selection within your Nextflow pipeline.
 
 <a name="resource-requirements"></a>
 
