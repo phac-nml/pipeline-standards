@@ -547,7 +547,7 @@ In this example, setting the `task.ext.override_configured_docker_registry` in t
 
 #### 5.2.2.1 Managing `process.ext.override_configured_docker_registry` with Optional Configurations
 
-To provide flexibility in managing the `process.ext.override_configured_docker_registry` setting, users can create an optional configuration file outside of the `nextflow.config` specifying the desired boolean value. This file can then be included in the pipeline using the `-c` option in commandline.
+To provide greater flexibility in managing the `process.ext.override_configured_docker_registry` setting, users can create an optional configuration file separate from the `nextflow.config`, specifying the desired boolean value. This file can then be included into the pipeline by using the `-c` option on the commandline.
 
 For example, you can create a configuration file named `azure_configuration.config` to set the default value for `process.ext.override_configured_docker_registry`. For example:
 
