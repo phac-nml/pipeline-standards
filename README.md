@@ -513,7 +513,7 @@ For more information, see the [Nextflow containers][] documentation and the [nf-
 
 ### 5.2.2 Configuring Module Software with Private or Alternate Container Registries
 
-To configure a private or alternate container registry, the standard practice is to set the `.registry` option to point to the desired resistry in the `nextflow.config` file. For example:
+To configure a private or alternate container registry, the standard practice is to set the `.registry` option to point to the desired registry in the `nextflow.config` file. For example:
 
 ```
 docker.registry = 'container-registry.com'
@@ -521,7 +521,7 @@ docker.registry = 'container-registry.com'
 
 This setting automatically prefixes each container name with the specified registry URL. In the above example, `biocontainers/fastqc:0.11.9--0` is transformed into `container-registry.com/biocontainers/fastqc:0.11.9--0`, ensuring that the container is downloaded from `container-registry.com`.
 
-In IRIDA Next Nextflow pipelines, we have chosen to adhere to nf-core standards by designating `quay.io` as the default container registry. This etup ensures that containers, such as `biocontainers/fastqc:0.11.9--0`, are automatically referenced as `quay.io/biocontainers/fastqc:0.11.9--0`. While this configuration simplifies container management, it can be restrictive when the pipeline requires containers from multiple registries, such as both `quay.io` and `docker.io`, since only one default registry can be configured at a time. Introducing flexibility in sourcing containers from different registries becomes valuable in situations where specific containers are only available in certain registries, or where there are preferences or restrictions on registry use.
+In IRIDA Next Nextflow pipelines, we have chosen to adhere to nf-core standards by designating `quay.io` as the default container registry. This setup ensures that containers, such as `biocontainers/fastqc:0.11.9--0`, are automatically referenced as `quay.io/biocontainers/fastqc:0.11.9--0`. While this configuration simplifies container management, it can be restrictive when the pipeline requires containers from multiple registries, such as both `quay.io` and `docker.io`, since only one default registry can be configured at a time. Introducing flexibility in sourcing containers from different registries becomes valuable in situations where specific containers are only available in certain registries, or where there are preferences or restrictions on registry use.
 
 To address this, we use `process.ext.override_configured_container_registry` to manage the selection of container registries dynamically by adding the following line to the `nextflow.config` file:
 
