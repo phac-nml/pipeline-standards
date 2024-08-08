@@ -539,10 +539,14 @@ To specify an alternative registry for a process, include a conditional check wi
 ```
 container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
     'https://depot.galaxyproject.org/singularity/fastqc:0.11.9--0' :
-    (task.ext.override_configured_container_registry ? 'docker.io/biocontainers/fastqc:v0.11.9_cv8' : 'biocontainers/fastqc:0.11.9--0') }"
+    task.ext.override_configured_container_registry != false ?
+    'docker.io/biocontainers/fastqc:v0.11.9_cv8' :
+    'biocontainers/fastqc:0.11.9--0' }"
 ```
 
 In this example, setting the `task.ext.override_configured_container_registry` in the container directive ensures the default Docker registry (`quay.io`) is overridden, allowing the process to use the DockerHub container registry (`docker.io`) instead.
+
+By using `!= false` in the condition, we ensure that the process will follow the alternative registry path whenever `task.ext.override_configured_container_registry` is set to any value other than `false` (including `true` or `null`). This approach provides flexibility by allowing different registry configurations to be applied without needing explicit overrides for every scenario.
 
 #### 5.2.2.1 Managing `process.ext.override_configured_container_registry` with Optional Configurations
 
@@ -556,7 +560,7 @@ For example, you can create a configuration file named `azure_configuration.conf
 // Azure-specific private registry to pull containers from
 docker.registry = "private-registry.com"
 
-// Azure-specific configuration for overriding the default Docker registry
+// Azure-specific configuration for overriding the default container registry
 process.ext.override_configured_container_registry = false
 ```
 
