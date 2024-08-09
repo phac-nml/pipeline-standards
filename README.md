@@ -40,7 +40,8 @@ This document describes the specification for developing [IRIDA Next][irida-next
   - [5.2. Local modules](#52-local-modules)
     - [5.2.1. Module software requirements](#521-module-software-requirements)
     - [5.2.2 Configuring Module Software with Private or Alternate Container Registries](#522-configuring-module-software-with-private-or-alternate-container-registries)
-      - [5.2.2.1 Managing `process.ext.override_configured_container_registry` with Optional Configurations](#5221-managing-processextoverride_configured_container_registry-with-optional-configurations)
+      - [5.2.2.1 Example: Overriding Container Registries with the `container` Directive](#5221-example-overriding-container-registries-with-the-container-directive)
+      - [5.2.2.2 Managing Optional Container Registry Overrides](#5222-managing-optional-container-registry-overrides)
 - [6. Resource requirements](#6-resource-requirements)
   - [6.1. Process resource label](#61-process-resource-label)
     - [6.1.1. Accepted resource labels](#611-accepted-resource-labels)
@@ -534,6 +535,8 @@ process.ext.override_configured_container_registry = true
 
 This custom extension allows us to define configurations beyond the standard Nextflow syntax, tailored to the needs of specific processes in the workflow. When a process runs, the value of `process.ext.override_configured_container_registry` is accessed within the `container` directive as `task.ext.override_configured_container_registry`. The `task` context refers to the specific instance of a process execution, encompassing all relevant attributes and extensions for that instance. This setup ensures that any custom settings, such as overriding the default container registries, are correctly applied during the execution of the pipeline.
 
+#### 5.2.2.1 Example: Overriding Container Registries with the `container` Directive
+
 To specify an alternative registry for a process, include a conditional check with `task.ext.override_configured_container_registry` in the nested ternary operator of the `container` directive. For example:
 
 ```
@@ -548,7 +551,7 @@ In this example, setting the `task.ext.override_configured_container_registry` i
 
 By using `!= false` in the condition, we ensure that the process will follow the alternative registry path whenever `task.ext.override_configured_container_registry` is set to any value other than `false` (including `true` or `null`). This approach provides flexibility by allowing different registry configurations to be applied without needing explicit overrides for every scenario.
 
-#### 5.2.2.1 Managing `process.ext.override_configured_container_registry` with Optional Configurations
+#### 5.2.2.2 Managing Optional Container Registry Overrides
 
 To provide greater flexibility in managing the `process.ext.override_configured_container_registry` setting, users can create an optional configuration file separate from the `nextflow.config` to define whether an alternative container registry can be used in the pipeline. This file can then be included into the Nextflow pipeline by using the `-c` option on the commandline.
 
@@ -800,3 +803,4 @@ specific language governing permissions and limitations under the License.
 [security-alerts.png]: images/security-alerts.png
 [nf-iridanext]: https://github.com/phac-nml/nf-iridanext
 [nf-test]: https://www.nf-test.com/
+[def]: #52
