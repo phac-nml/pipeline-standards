@@ -227,21 +227,27 @@ createuser -s test -P -U postgres
 
 **8. Install Opensearch**
 
-[OpenSearch](https://opensearch.org/) is used by IRIDA Next for indexing and searching through metadata. In order to install opensearch please run the following:
+[OpenSearch](https://opensearch.org/) is used by IRIDA Next for indexing and searching through metadata. In order to install opensearch please first install [Homebrew](https://brew.sh/).
 
 ```bash
-sudo apt update
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
-sudo mkdir /var/run/opensearch
-# Change password here to your own custom password
-sudo OPENSEARCH_INITIAL_ADMIN_PASSWORD="password" apt install opensearch
+# Setup brew environment
+echo >> /home/$HOME/.bashrc
+echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> /home/$HOME/.bashrc
+eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+sudo apt-get install build-essential
+
+# Disable brew analytics
+brew analytics off
 ```
 
-Note, the passwords will need to be "strong". That is:
+Next, you should be able to install and run opensearch with:
 
-> a minimum 8 character password and must contain at least one uppercase letter, one lowercase letter, one digit, and one special character that is strong.
-
-Note, if installation fails, you can check the log here `/var/log/opensearch/install_demo_configuration.log`. Failures may occur if the admin password isn't strong enough.
+```bash
+brew install opensearch
+brew services start opensearch
+```
 
 **9. Generate and configure the environment credentials**
 
