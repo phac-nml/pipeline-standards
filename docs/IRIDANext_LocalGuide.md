@@ -249,6 +249,12 @@ brew install opensearch
 brew services start opensearch
 ```
 
+Note, for **WSL/Ubuntu** the opensearch service won't start like this. Instead, you must run the `opensearch` binary yourself. As in:
+
+```bash
+opensearch
+```
+
 **9. Generate and configure the environment credentials**
 
 Refer to [GA4GH WES Sapporo Setup](#ga4gh-wes-sapporo-setup-for-development) for how to setup and configure the IRIDA Next environment credentials for development purposes.
