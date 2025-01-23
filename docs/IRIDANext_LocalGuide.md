@@ -231,11 +231,9 @@ createuser -s test -P -U postgres
 
 ```bash
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+# Follow the brew instructions printed after installation to setup the environment
 
-# Setup brew environment
-echo >> /home/$HOME/.bashrc
-echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> /home/$HOME/.bashrc
-eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+# Install some essential dependencies
 sudo apt-get install build-essential
 
 # Disable brew analytics
