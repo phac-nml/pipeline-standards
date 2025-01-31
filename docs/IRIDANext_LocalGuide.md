@@ -225,11 +225,39 @@ createuser -s test -P -U postgres
 # When prompted for a password for the `test` role above, set the password as `test`. These are the credentials used by the development and test databases.
 ```
 
-**8. Generate and configure the environment credentials**
+**8. Install Opensearch**
+
+[OpenSearch](https://opensearch.org/) is used by IRIDA Next for indexing and searching through metadata. In order to install opensearch please first install [Homebrew](https://brew.sh/).
+
+```bash
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+# Follow the brew instructions printed after installation to setup the environment
+
+# Install some essential dependencies
+sudo apt-get install build-essential
+
+# Disable brew analytics
+brew analytics off
+```
+
+Next, you should be able to install and run opensearch with:
+
+```bash
+brew install opensearch
+brew services start opensearch
+```
+
+Note, for **WSL/Ubuntu** the opensearch service won't start like this. Instead, you must run the `opensearch` binary yourself. As in:
+
+```bash
+opensearch
+```
+
+**9. Generate and configure the environment credentials**
 
 Refer to [GA4GH WES Sapporo Setup](#ga4gh-wes-sapporo-setup-for-development) for how to setup and configure the IRIDA Next environment credentials for development purposes.
 
-**9. Initialize the databases**
+**10. Initialize the databases**
 
 _Run:_
 
@@ -238,11 +266,11 @@ cd /path/to/irida-next
 bin/rails db:create db:migrate db:seed
 ```
 
-**10. Register pipelines**
+**11. Register pipelines**
 
 Refer to [Registering pipelines in IRIDA Next](#registering-pipelines-in-irida-next) for how to register Nextflow pipelines.
 
-**11. Restarting**
+**12. Restarting**
 
 Rebuild and restart the sapporo docker container, restart postgres, and start Irida Next following the steps found here: [Running a local instance of IRIDA Next](#running-a-local-instance-of-irida-next).
 
