@@ -478,11 +478,62 @@ When setup this way, the pipeline will generate an `iridanext.output.json.gz` fi
 
 Please see the [nf-iridanext documentation][nf-iridanext] for more details on integrating output files and metadata produced from the pipeline into this IRIDA Next integration file.
 
-# 5. Modules
+# 5. Error handling
+
+There are a number of different options for error handling of pipelines launched from IRIDA Next. These can be divided up into: **unrecoverable errors** and **recoverable errors**.
+
+## 5.1. Unrecoverable errors
+
+An **unrecoverable error** is an error in a pipeline that would prevent the pipeline to continue running. 
+
+## 5.2. Recoverable errors
+
+A **recoverable error** is an error that a pipeline is able to recover from and continue running, generating some output in the end. Identifying and recovering from these types of errors within a pipeline is up to the pipeline developer, so long as the pipeline is able to successfully run and generate output along with an `iridanext.output.json` file for storing results in IRIDA Next. However, we would recommend following a structure similar to below.
+
+### 5.2.1. Creation of an error report
+
+We would recommed a pipeline creates an error report output file which indicates the sample impacted by the error and the type of error/other information that may be useful for someone running the pipeline. This error report should be stored within IRIDA Next for users to download and review once a pipeline completes.
+
+#### 5.2.1.1. An `errors.csv` error report
+
+One recommended file format for recording errors is in a CSV file, which records errors for a sample within a single row. For example:
+
+| sample        | sample_name | success | message                                            |
+|---------------|-------------|---------|----------------------------------------------------|
+| INXT_SAM_1234 | SampleA     | TRUE    |                                                    |
+| INXT_SAM_2345 | SampleB     | FALSE   | Genome length not within expected range [MIN, MAX] |
+
+The `errors.csv` file should be attached as one of the outputs stored in IRIDA Next so that users of the pipeline can review this file when a pipeline completes. Note, it is up to the pipeline developer if it makes sense to include all samples in this file with a column indicating if there was an error, or to only included samples with errors in this CSV file.
+
+### 5.2.2. Indicating errors in sample metadata
+
+Either as an alternative, or in addition to storing an error report in CSV format, errors for a pipeline can be indicated within metadata key/values for a sample, which are stored in IRIDA Next.
+
+For example, the below shows an `iridanext.output.json` file containing some metadata used to indicate an error.
+
+```json
+{
+  "metadata": {
+    "samples": {
+      "INXT_SAM_1234": {
+        "success": TRUE,
+      },
+      "INXT_SAM_2345": {
+        "success": FALSE,
+        "message": "Genome length not within expected range [MIN, MAX]"
+      }
+    }
+  }
+}
+```
+
+This method has the advantage of making it easier for someone to view errors across many pipeline runs through the IRIDA Next metadata table. However, the disadvantage is that the metadata table will only show the error for the most recent pipeline run for a sample (other metadata key/value pairs from previous pipeline runs will be overwritten).
+
+# 6. Modules
 
 [Modules in Nextflow][nextflow-modules] are scripts that can contain functions, processes, or workflows.
 
-## 5.1. nf-core modules
+## 6.1. nf-core modules
 
 Nf-core contains a number of modules for processes to execute different bioinformatics tools ([nf-core modules][]). Where possible, please use nf-core modules within your pipeline. These can be installed via running the following command from the [nf-core tools][nf-core-modules-install].
 
@@ -490,11 +541,11 @@ Nf-core contains a number of modules for processes to execute different bioinfor
 nf-core modules install [NAME]
 ```
 
-## 5.2. Local modules
+## 6.2. Local modules
 
 If it is not possible to use existing nf-core modules, you can create your own modules local to your pipeline in the `modules/local/` directory. Please see the [nf-core contributing modules][nf-core-contributing-modules] documentation for expectations on how modules should behave. Local modules won't need to follow all of these guidelines (such as uploading to the list of nf-core approved modules), but the behaviour of inputs, parameters, and outputs of a process should be followed as closely as possible.
 
-### 5.2.1. Module software requirements
+### 6.2.1. Module software requirements
 
 Each module should define its software requirements as a singularity/docker container. This requires using the `container` keyword in the process. For example:
 
@@ -512,7 +563,7 @@ docker.registry =  'quay.io'
 
 For more information, see the [Nextflow containers][] documentation and the [nf-core modules software requirements][] guide.
 
-### 5.2.2 Configuring Module Software with Private or Alternate Container Registries
+### 6.2.2 Configuring Module Software with Private or Alternate Container Registries
 
 To configure a private or alternate container registry, the standard practice is to set the `.registry` option to point to the desired registry in the `nextflow.config` file. For example:
 
@@ -535,7 +586,7 @@ process.ext.override_configured_container_registry = true
 
 This custom extension allows us to define configurations beyond the standard Nextflow syntax, tailored to the needs of specific processes in the workflow. When a process runs, the value of `process.ext.override_configured_container_registry` is accessed within the `container` directive as `task.ext.override_configured_container_registry`. The `task` context refers to the specific instance of a process execution, encompassing all relevant attributes and extensions for that instance. This setup ensures that any custom settings, such as overriding the default container registries, are correctly applied during the execution of the pipeline.
 
-#### 5.2.2.1 Example: Overriding Container Registries with the `container` Directive
+#### 6.2.2.1 Example: Overriding Container Registries with the `container` Directive
 
 To specify an alternative registry for a process, include a conditional check with `task.ext.override_configured_container_registry` in the nested ternary operator of the `container` directive. For example:
 
@@ -551,7 +602,7 @@ In this example, setting the `task.ext.override_configured_container_registry` i
 
 By using `!= false` in the condition, we ensure that the process will follow the alternative registry path whenever `task.ext.override_configured_container_registry` is set to any value other than `false` (including `true` or `null`). This approach provides flexibility by allowing different registry configurations to be applied without needing explicit overrides for every scenario.
 
-#### 5.2.2.2 Managing Optional Container Registry Overrides
+#### 6.2.2.2 Managing Optional Container Registry Overrides
 
 To provide greater flexibility in managing the `process.ext.override_configured_container_registry` setting, users can create an optional configuration file separate from the `nextflow.config` to define whether an alternative container registry can be used in the pipeline. This file can then be included into the Nextflow pipeline by using the `-c` option on the commandline.
 
@@ -577,11 +628,11 @@ This method allows for dynamic adjustment of container settings, enabling flexib
 
 <a name="resource-requirements"></a>
 
-# 6. Resource requirements
+# 7. Resource requirements
 
 To define computational resource requirements for each process, we will follow the [nf-core resource][nf-core-module-resource] standards as much as possible, where resources are adjusted by a `label` in each `process` of a pipeline. The pipeline developer will be responsible for setting an appropriate `label` in each process of the NextFlow pipeline to appropriatly define required resources. In addition, the developer is responsible for tuning any resources defined in the `config/base.config` file, as described in the [nf-core tuning workflow resources][] documentation.
 
-## 6.1. Process resource label
+## 7.1. Process resource label
 
 The pipeline developer will add a `label` to each `process` of a NextFlow pipeline to adjust resources. For example:
 
@@ -593,7 +644,7 @@ process name {
 }
 ```
 
-### 6.1.1. Accepted resource labels
+### 7.1.1. Accepted resource labels
 
 The following labels will be accepted:
 
@@ -603,21 +654,21 @@ The following labels will be accepted:
 - `process_high`
 - `process_very_high`: This label is an addition over those provided by nf-core to be used for situations where a process needs a lot of resources beyond `process_high`.
 
-## 6.2. Tuning resource limits with parameters
+## 7.2. Tuning resource limits with parameters
 
 Nf-core provides the capability to adjust the maximum resources given to processes in a pipeline using parameters: `--max_cpus`, `--max_memory`, and `--max_time`. Pipeline developers will be responsible for making sure thse parameters are available in the `nextflow.config` file. See the [nf-core max resources][] documentation for more details.
 
-# 7. Testing
+# 8. Testing
 
 Nextflow pipelines should include test suites, linting, and execution of these tests automatically on merging of new code (i.e., continuous integration). These files should be included automatically if the pipeline is generated using the [nf-core create][nf-core-create] command. A description of these different tests are included in the [nf-core contributing][nf-core-contributing-github-actions] documentation.
 
-## 7.1. Nextflow test profile
+## 8.1. Nextflow test profile
 
 In particular, a `test` profile should be setup in Nextflow so that the pipeline can be executed with `nextflow [NAME] -profile test,docker`.
 
 Parameters for the `test` profile should be specified in the `conf/test.config` file. This can reference data stored elsewhere (e.g., on GitHub). For example, see the `test.config` for the IRIDA Next sample pipeline <https://github.com/phac-nml/iridanext-example-nf/blob/main/conf/test.config>.
 
-## 7.2. Unit/integration tests
+## 8.2. Unit/integration tests
 
 It is also expected to include with each pipeline a set of unit/integration tests. These can be implemented by using [nf-test][].
 
@@ -635,9 +686,9 @@ nf-test init
 
 The nf-core templates for pipelines should include a GitHub actions task for running `nf-test` on pull-requests. Please refer to the [nf-test documentation][nf-test] for more details.
 
-# 8. Executing pipelines
+# 9. Executing pipelines
 
-## 8.1. Standalone execution
+## 9.1. Standalone execution
 
 Pipelines should be configured so that they can be executed by:
 
@@ -647,7 +698,7 @@ nextflow run [NAME] --input inputsheet.csv --outdir output [OTHER PARAMETERS]
 
 Where `inputsheet.csv` is the CSV file containing samples (or other input data) and `output` is the directory containing output data. Other parameters can be included, though reasonable defaults should be set so the number of required parameters is as minimal as possible.
 
-## 8.2. Execution via GA4GE WES
+## 9.2. Execution via GA4GE WES
 
 [IRIDA Next][irida-next] will make use of the [GA4GH Workflow Execution Service][ga4gh-wes] API for executing pipelines. This will require making a `POST` request to **RunWorkflow** with JSON that looks similar to the following:
 
@@ -675,7 +726,7 @@ Where `inputsheet.csv` is the CSV file containing samples (or other input data) 
 
 Here, parameters are specified by key/value pairs under `workflow_params` and the location of the workflow code is given in `workflow_url`. See [WES RunWorkflow][wes-run-workflow] for more details.
 
-## 8.3. Running pipelines in a local instance of IRIDA Next
+## 9.3. Running pipelines in a local instance of IRIDA Next
 
 For detailed instructions and configuration options, please refer to the the guide for setting up a local instance of IRIDA Next:
 
@@ -692,19 +743,19 @@ The guide includes step-by-step instructions for installing required dependencie
   - Register Pipelines: Add and register Nextflow pipelines in IRIDA Next.
   - Run Local Instance: Start the web application and access it via a web browser.
 
-# 9. Resources
+# 10. Resources
 
-## 9.1. Pipeline development tutorial
+## 10.1. Pipeline development tutorial
 
 A tutorial on developing a pipeline is available at [IRIDA Next nf-core pipeline tutorial][pipeline-tutorial].
 
-## 9.2. List of pipelines
+## 10.2. List of pipelines
 
 An example pipeline that conforms to these standards is available at <https://github.com/phac-nml/iridanext-example-nf>.
 
 Other pipelines are listed at <https://github.com/phac-nml/nf-pipelines>.
 
-## 9.3. Other resources
+## 10.3. Other resources
 
 - [PHA4GE proposed pipeline standards][pha4ge-pipeline-standards]: Proposed pipeline standards from the PHA4GE Bioinformatics Pipelines & Visualization Working Group
 - [Government of Canada: Guide for Publishing Open Source Code][gov-canada-open-source-software]
@@ -712,17 +763,17 @@ Other pipelines are listed at <https://github.com/phac-nml/nf-pipelines>.
 - [nfcore parameters][nfcore-parameters]
 - [GA4GH Workflow Execution Service][ga4gh-wes]
 
-# 10. Future pipeline integration ideas
+# 11. Future pipeline integration ideas
 
 Additional ideas for integrating pipelines in the future can be found in the [IRIDA Next pipeline integration ideas][iridanext-ideas] document.
 
 <a name="security"></a>
 
-# 11. Security practices
+# 12. Security practices
 
 Please maintain good software security practices with pipeline code to be published. In particular, never store plain text passwords, API keys, ssh keys, or otherwise confidential information in software/pipelines which are distributed publicly.
 
-## 11.1. Automated repository scanning (recommendations)
+## 12.1. Automated repository scanning (recommendations)
 
 There exist automated tools to aid in maintining secure code and identifying potential issues. The [GitHub Securing your repository][github-secure-repository] documentation provides detailed information on how to secure your GitHub repository, which includes automated scanning. In particular, some recommendations include:
 
@@ -740,11 +791,11 @@ Once enabled, security alerts appear in the **Security** tab on GitHub.
 
 For more security recommendations, please see the [PHA4GE pipeline guidelines][pha4ge-pipeline-security].
 
-# 12. Publishing guidelines
+# 13. Publishing guidelines
 
 Our intention is to follow, as much as possible, the standards and practices set out by nf-core. However, we leave it as optional to actually publish pipelines/modules/subworkflows with the official nf-core repositories. We would encourage this where it makes sense in order to support re-use and giving back to the community (please refer to the [nf-core publishing requirements][] for the guidelines in this case). However, it is perfectly acceptible to publish pipelines/modules/subworkflows in separate Git repositories outside of nf-core. Please see the [if the guidelines don't fit][nf-core-external-development] and [using nf-core components outside of nf-core][nf-core-outside-nf-core] sections of the nf-core documentation for more information on this scenario and other locations to list your pipeline.
 
-# 13. Legal
+# 14. Legal
 
 Copyright 2023 Government of Canada
 
