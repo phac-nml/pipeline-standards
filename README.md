@@ -752,31 +752,7 @@ Where `inputsheet.csv` is the CSV file containing samples (or other input data) 
 
 ## 9.2. Execution via GA4GE WES
 
-[IRIDA Next][irida-next] will make use of the [GA4GH Workflow Execution Service][ga4gh-wes] API for executing pipelines. This will require making a `POST` request to **RunWorkflow** with JSON that looks similar to the following:
-
-```json
-{
-  "workflow_params": {
-    "--input": "https://url-to-input.csv",
-    "-r": "REVISION",
-    "[PARAMETERS]": "[PARAMETER VALUES]"
-  },
-  "workflow_type": "DSL2",
-  "workflow_type_version": "22.10.7",
-  "tags": {
-    "createdBy": "Test",
-    "group": "Test"
-  },
-  "workflow_engine_parameters": {
-    "engine": "nextflow",
-    "execute_loc": "azure"
-  },
-  "workflow_url": "https://github.com/phac-nml/iridanext-example-nf",
-  "workflow_attachment": ""
-}
-```
-
-Here, parameters are specified by key/value pairs under `workflow_params` and the location of the workflow code is given in `workflow_url`. See [WES RunWorkflow][wes-run-workflow] for more details.
+[IRIDA Next][irida-next] will make use of the [GA4GH Workflow Execution Service][ga4gh-wes] API for executing pipelines. This will require making a `POST` request to **RunWorkflow**. See [WES RunWorkflow][wes-run-workflow] for more details.
 
 ## 9.3. Running pipelines in a local instance of IRIDA Next
 
