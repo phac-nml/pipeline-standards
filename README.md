@@ -488,13 +488,54 @@ An **unrecoverable error** is an error in a pipeline that would prevent the pipe
 
 ## 5.2. Recoverable errors
 
-A **recoverable error** is an error that a pipeline is able to recover from and continue running, generating some output in the end. Identifying and recovering from these types of errors within a pipeline is up to the pipeline developer, so long as the pipeline is able to successfully run and generate output along with an `iridanext.output.json` file for storing results in IRIDA Next. However, we would recommend following a structure similar to below.
+A **recoverable error** is an error that a pipeline is able to recover from and continue running, generating some output in the end. Identifying and recovering from these types of errors within a pipeline is up to the pipeline developer, so long as the pipeline is able to successfully run and generate output along with an `iridanext.output.json` file for storing results in IRIDA Next.
 
-### 5.2.1. Creation of an error report
+### 5.2.1. Identifying a recoverable error
+
+Nextflow processes provide the [errorStrategy][] directive which can be used to configure the behaviour of Nextflow when encountering an error in an individual process. In order to recover from an errored process, the *errorStrategy* should be set to `ignore`. It is recommended to configure this in the `conf/modules.config` file of the pipeline, where configuration for individual processes can be set.
+
+As an example, for the [fetchdatairidanext][] pipeline, [this block of code](https://github.com/phac-nml/fetchdatairidanext/blob/6be44f6cdf101bdd51c5a612afb85633b3ad2a8c/conf/modules.config#L29-L32) is used to set the *errorStrategy*:
+
+```groovy
+withName: SRATOOLS_PREFETCH {
+  errorStrategy = 'ignore'
+  maxForks = params.max_jobs_with_network_connections
+}
+```
+
+This configures the `SRATOOLS_PREFETCH` process (which downloads reads from NCBI) to ignore any errors that may occur when downloading reads for a sample and continue running the pipeline.
+
+Next, in order to gather up all the errored processes for additional processing and reporting, the [following example bit of code](https://github.com/phac-nml/fetchdatairidanext/blob/6be44f6cdf101bdd51c5a612afb85633b3ad2a8c/subworkflows/local/fastq_download_prefetch_fasterqdump_sratools/main.nf#L28-L35) can be used in the pipeline (code shown below is summary of code in pipeline).
+
+```groovy
+// A channel of samples and accessions of reads to download
+ch_sra_ids   // channel: [ val(meta), val(id) ]
+
+// Runs prefetch to download reads for each sample/accession listed
+//  in the 'ch_sra_ids' channel
+SRATOOLS_PREFETCH ( ch_sra_ids, ch_ncbi_settings, ch_dbgap_key )
+
+// Creates a channel, 'fetches', which contains all the successfully downloaded 
+//  sample/accessions (the SRATOOLS_PREFETCH.out.sra) and any remaining 
+//  sample/accessions that are not found in SRATOOLS_PREFETCH.out.sra 
+//  (i.e., that were not successfully downloaded)
+fetches = ch_sra_ids.join(SRATOOLS_PREFETCH.out.sra, remainder: true)
+
+// Creates a channel containing a list of only the failed sample/accessions 
+//  (those with a value of null in 'fetches' channel)
+failed_fetches = fetches.filter { it[2] == null }.toList()
+
+// Generates a report of failed sample/accessions
+PREFETCH_CHECKER (failed_fetches)
+```
+
+The code above is used to identify any sample/accessions (from the input channel `ch_sra_ids`) which failed in the `SRATOOLS_PREFETCH` step (did not return a value in the output of this process since errors are ignored in this process). The failed sample/accessions are passed to `PREFETCH_CHECKER` to generate an **error report**.
+
+### 5.2.2. Creation of an error report
 
 We would recommed a pipeline creates an error report output file which indicates the sample impacted by the error and the type of error/other information that may be useful for someone running the pipeline. This error report should be stored within IRIDA Next for users to download and review once a pipeline completes.
 
-#### 5.2.1.1. An `errors.csv` error report
+#### 5.2.2.1. An `errors.csv` error report
 
 One recommended file format for recording errors is in a CSV file, which records errors for a sample within a single row. For example:
 
@@ -505,7 +546,7 @@ One recommended file format for recording errors is in a CSV file, which records
 
 The `errors.csv` file should be attached as one of the outputs stored in IRIDA Next so that users of the pipeline can review this file when a pipeline completes. Note, it is up to the pipeline developer if it makes sense to include all samples in this file with a column indicating if there was an error, or to only included samples with errors in this CSV file.
 
-### 5.2.2. Indicating errors in sample metadata
+### 5.2.3. Indicating errors in sample metadata
 
 Either as an alternative, or in addition to storing an error report in CSV format, errors for a pipeline can be indicated within metadata key/values for a sample, which are stored in IRIDA Next.
 
@@ -855,3 +896,5 @@ specific language governing permissions and limitations under the License.
 [nf-iridanext]: https://github.com/phac-nml/nf-iridanext
 [nf-test]: https://www.nf-test.com/
 [def]: #52
+[errorStrategy]: https://www.nextflow.io/docs/latest/reference/process.html#errorstrategy
+[fetchdatairidanext]: https://github.com/phac-nml/fetchdatairidanext
