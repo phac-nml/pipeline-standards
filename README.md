@@ -4,7 +4,6 @@ _This document is in-progress and should be considered as a **DRAFT** that is su
 
 This document describes the specification for developing [IRIDA Next][irida-next] Nextflow pipelines.
 
-- [IRIDA Next Nextflow pipeline specification](#irida-next-nextflow-pipeline-specification)
 - [1. Starting development](#1-starting-development)
   * [1.1. Developing a pipeline to contribute to nf-core](#11-developing-a-pipeline-to-contribute-to-nf-core)
   * [1.2. Developing a pipeline which won't be contributed to nf-core](#12-developing-a-pipeline-which-wont-be-contributed-to-nf-core)
