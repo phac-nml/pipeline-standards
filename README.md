@@ -5,63 +5,70 @@ _This document is in-progress and should be considered as a **DRAFT** that is su
 This document describes the specification for developing [IRIDA Next][irida-next] Nextflow pipelines.
 
 - [1. Starting development](#1-starting-development)
-  - [1.1. Developing a pipeline to contribute to nf-core](#11-developing-a-pipeline-to-contribute-to-nf-core)
-  - [1.2. Developing a pipeline which won't be contributed to nf-core](#12-developing-a-pipeline-which-wont-be-contributed-to-nf-core)
-    - [1.2.1. Requirements from nf-core](#121-requirements-from-nf-core)
-  - [1.3. Requirements for integrating with IRIDA Next](#13-requirements-for-integrating-with-irida-next)
-  - [1.4. Other requirements](#14-other-requirements)
+  * [1.1. Developing a pipeline to contribute to nf-core](#11-developing-a-pipeline-to-contribute-to-nf-core)
+  * [1.2. Developing a pipeline which won't be contributed to nf-core](#12-developing-a-pipeline-which-wont-be-contributed-to-nf-core)
+    + [1.2.1. Requirements from nf-core](#121-requirements-from-nf-core)
+  * [1.3. Requirements for integrating with IRIDA Next](#13-requirements-for-integrating-with-irida-next)
+  * [1.4. Other requirements](#14-other-requirements)
 - [2. Input](#2-input)
-  - [2.1. Default samplesheet](#21-default-samplesheet)
-  - [2.2. Types of input data](#22-types-of-input-data)
-    - [2.2.1. Sample identifier](#221-sample-identifier)
-    - [2.2.2. Input files](#222-input-files)
+  * [2.1. Default samplesheet](#21-default-samplesheet)
+  * [2.2. Types of input data](#22-types-of-input-data)
+    + [2.2.1. Sample identifier](#221-sample-identifier)
+    + [2.2.2. Input files](#222-input-files)
       - [2.2.2.1. Example sample input files](#2221-example-sample-input-files)
-    - [2.2.3. Metadata input types](#223-metadata-input-types)
+    + [2.2.3. Metadata input types](#223-metadata-input-types)
       - [2.2.3.1. Example metadata input types](#2231-example-metadata-input-types)
-  - [2.3. Defining the samplesheet structure for a pipeline](#23-defining-the-samplesheet-structure-for-a-pipeline)
-    - [2.3.1. Defining sample identifiers in IRIDA Next](#231-defining-sample-identifiers-in-irida-next)
-    - [2.3.2. Defining selection of input files in IRIDA Next](#232-defining-selection-of-input-files-in-irida-next)
+  * [2.3. Defining the samplesheet structure for a pipeline](#23-defining-the-samplesheet-structure-for-a-pipeline)
+    + [2.3.1. Defining sample identifiers in IRIDA Next](#231-defining-sample-identifiers-in-irida-next)
+    + [2.3.2. Defining selection of input files in IRIDA Next](#232-defining-selection-of-input-files-in-irida-next)
       - [2.3.2.1. Example samplesheet and JSON schema for an assembly](#2321-example-samplesheet-and-json-schema-for-an-assembly)
-    - [2.3.3. Defining selection of input metadata in IRIDA Next](#233-defining-selection-of-input-metadata-in-irida-next)
+    + [2.3.3. Defining selection of input metadata in IRIDA Next](#233-defining-selection-of-input-metadata-in-irida-next)
       - [2.3.3.1. Example samplesheet and JSON schema for a metadata value](#2331-example-samplesheet-and-json-schema-for-a-metadata-value)
 - [3. Parameters](#3-parameters)
 - [4. Output](#4-output)
-  - [4.1. Files](#41-files)
-  - [4.2. IRIDA Next JSON](#42-irida-next-json)
-    - [4.2.1. Minimal example](#421-minimal-example)
-    - [4.2.2. Complete example](#422-complete-example)
-    - [4.2.3. Output files](#423-output-files)
+  * [4.1. Files](#41-files)
+  * [4.2. IRIDA Next JSON](#42-irida-next-json)
+    + [4.2.1. Minimal example](#421-minimal-example)
+    + [4.2.2. Complete example](#422-complete-example)
+    + [4.2.3. Output files](#423-output-files)
       - [4.2.3.1. global](#4231-global)
       - [4.2.3.2. samples](#4232-samples)
-    - [4.2.4. Metadata](#424-metadata)
-    - [4.2.5. Creating the IRIDA Next JSON integration file](#425-creating-the-irida-next-json-integration-file)
-- [5. Modules](#5-modules)
-  - [5.1. nf-core modules](#51-nf-core-modules)
-  - [5.2. Local modules](#52-local-modules)
-    - [5.2.1. Module software requirements](#521-module-software-requirements)
-    - [5.2.2 Configuring Module Software with Private or Alternate Container Registries](#522-configuring-module-software-with-private-or-alternate-container-registries)
-      - [5.2.2.1 Example: Overriding Container Registries with the `container` Directive](#5221-example-overriding-container-registries-with-the-container-directive)
-      - [5.2.2.2 Managing Optional Container Registry Overrides](#5222-managing-optional-container-registry-overrides)
-- [6. Resource requirements](#6-resource-requirements)
-  - [6.1. Process resource label](#61-process-resource-label)
-    - [6.1.1. Accepted resource labels](#611-accepted-resource-labels)
-  - [6.2. Tuning resource limits with parameters](#62-tuning-resource-limits-with-parameters)
-- [7. Testing](#7-testing)
-  - [7.1. Nextflow test profile](#71-nextflow-test-profile)
-  - [7.2. Unit/integration tests](#72-unitintegration-tests)
-- [8. Executing pipelines](#8-executing-pipelines)
-  - [8.1. Standalone execution](#81-standalone-execution)
-  - [8.2. Execution via GA4GE WES](#82-execution-via-ga4ge-wes)
-  - [8.3. Running pipelines in a local instance of IRIDA Next](#83-running-pipelines-in-a-local-instance-of-irida-next)
-- [9. Resources](#9-resources)
-  - [9.1. Pipeline development tutorial](#91-pipeline-development-tutorial)
-  - [9.2. List of pipelines](#92-list-of-pipelines)
-  - [9.3. Other resources](#93-other-resources)
-- [10. Future pipeline integration ideas](#10-future-pipeline-integration-ideas)
-- [11. Security practices](#11-security-practices)
-  - [11.1. Automated repository scanning (recommendations)](#111-automated-repository-scanning-recommendations)
-- [12. Publishing guidelines](#12-publishing-guidelines)
-- [13. Legal](#13-legal)
+    + [4.2.4. Metadata](#424-metadata)
+    + [4.2.5. Creating the IRIDA Next JSON integration file](#425-creating-the-irida-next-json-integration-file)
+- [5. Error handling](#5-error-handling)
+  * [5.1. Unrecoverable errors](#51-unrecoverable-errors)
+  * [5.2. Recoverable errors](#52-recoverable-errors)
+    + [5.2.1. Identifying a recoverable error](#521-identifying-a-recoverable-error)
+    + [5.2.2. Creation of an error report](#522-creation-of-an-error-report)
+      - [5.2.2.1. An `errors.csv` error report](#5221-an-errorscsv-error-report)
+    + [5.2.3. Indicating errors in sample metadata](#523-indicating-errors-in-sample-metadata)
+- [6. Modules](#6-modules)
+  * [6.1. nf-core modules](#61-nf-core-modules)
+  * [6.2. Local modules](#62-local-modules)
+    + [6.2.1. Module software requirements](#621-module-software-requirements)
+    + [6.2.2 Configuring Module Software with Private or Alternate Container Registries](#622-configuring-module-software-with-private-or-alternate-container-registries)
+      - [6.2.2.1 Example: Overriding Container Registries with the `container` Directive](#6221-example-overriding-container-registries-with-the-container-directive)
+      - [6.2.2.2 Managing Optional Container Registry Overrides](#6222-managing-optional-container-registry-overrides)
+- [7. Resource requirements](#7-resource-requirements)
+  * [7.1. Process resource label](#71-process-resource-label)
+    + [7.1.1. Accepted resource labels](#711-accepted-resource-labels)
+  * [7.2. Tuning resource limits with parameters](#72-tuning-resource-limits-with-parameters)
+- [8. Testing](#8-testing)
+  * [8.1. Nextflow test profile](#81-nextflow-test-profile)
+  * [8.2. Unit/integration tests](#82-unitintegration-tests)
+- [9. Executing pipelines](#9-executing-pipelines)
+  * [9.1. Standalone execution](#91-standalone-execution)
+  * [9.2. Execution via GA4GE WES](#92-execution-via-ga4ge-wes)
+  * [9.3. Running pipelines in a local instance of IRIDA Next](#93-running-pipelines-in-a-local-instance-of-irida-next)
+- [10. Resources](#10-resources)
+  * [10.1. Pipeline development tutorial](#101-pipeline-development-tutorial)
+  * [10.2. List of pipelines](#102-list-of-pipelines)
+  * [10.3. Other resources](#103-other-resources)
+- [11. Future pipeline integration ideas](#11-future-pipeline-integration-ideas)
+- [12. Security practices](#12-security-practices)
+  * [12.1. Automated repository scanning (recommendations)](#121-automated-repository-scanning-recommendations)
+- [13. Publishing guidelines](#13-publishing-guidelines)
+- [14. Legal](#14-legal)
 
 # 1. Starting development
 
@@ -478,11 +485,114 @@ When setup this way, the pipeline will generate an `iridanext.output.json.gz` fi
 
 Please see the [nf-iridanext documentation][nf-iridanext] for more details on integrating output files and metadata produced from the pipeline into this IRIDA Next integration file.
 
-# 5. Modules
+# 5. Error handling
+
+There are a number of different options for error handling of pipelines launched from IRIDA Next. These can be divided up into: **unrecoverable errors** and **recoverable errors**.
+
+## 5.1. Unrecoverable errors
+
+An **unrecoverable error** is an error in a pipeline that would prevent the pipeline from finishing, completing, or continuing to run. In Nextflow the [errorStrategy][] directive can be used to configure the behaviour of Nextflow when encountering an error in an individual process. By default, the *errorStrategy* is set to `terminate`, which will terminate the pipeline when an error in a process is encountered. In IRIDA Next, a terminated pipeline will appear with an `error` status and won't produce any output.
+
+Alternatively, processes can be retried using the `retry` *errorStrategy*. This is often configured in the `conf/base.config` configuration in nf-core pipeline templates.
+
+As an example, for the [fetchdatairidanext][] pipeline, [this block of code](https://github.com/phac-nml/fetchdatairidanext/blob/6be44f6cdf101bdd51c5a612afb85633b3ad2a8c/conf/base.config#L17-L18) is used to retry a process at least once, before setting *errorStrategy* to `finish` (will wait until already submitted processes complete before terminating the pipeline with an error):
+
+```groovy
+process {
+  errorStrategy = { task.exitStatus in ((130..145) + 104) ? 'retry' : 'finish' }
+  maxRetries    = 1
+}
+```
+
+## 5.2. Recoverable errors
+
+A **recoverable error** is an error that a pipeline is able to recover from and continue running, generating some output in the end which can be stored in IRIDA Next. Identifying and recovering from these types of errors within a pipeline is up to the pipeline developer, so long as the pipeline is able to successfully run and generate output along with an `iridanext.output.json` file for storing results in IRIDA Next.
+
+### 5.2.1. Identifying a recoverable error
+
+Nextflow processes provide the [errorStrategy][] directive which can be used to configure the behaviour of Nextflow when encountering an error in an individual process. In order to recover from an errored process, the *errorStrategy* should be set to `ignore`. It is recommended to configure this in the `conf/modules.config` file of the pipeline, where configuration for individual processes can be set.
+
+As an example, for the [fetchdatairidanext][] pipeline, [this block of code](https://github.com/phac-nml/fetchdatairidanext/blob/6be44f6cdf101bdd51c5a612afb85633b3ad2a8c/conf/modules.config#L29-L32) is used to set the *errorStrategy*:
+
+```groovy
+withName: SRATOOLS_PREFETCH {
+  errorStrategy = 'ignore'
+  maxForks = params.max_jobs_with_network_connections
+}
+```
+
+This configures the `SRATOOLS_PREFETCH` process (which downloads reads from NCBI) to ignore any errors that may occur when downloading reads for a sample and continue running the pipeline.
+
+Next, in order to gather up all the errored processes for additional processing and reporting, the [following example bit of code](https://github.com/phac-nml/fetchdatairidanext/blob/6be44f6cdf101bdd51c5a612afb85633b3ad2a8c/subworkflows/local/fastq_download_prefetch_fasterqdump_sratools/main.nf#L28-L35) can be used in the pipeline (code shown below is summary of code in pipeline).
+
+```groovy
+// A channel of samples and accessions of reads to download
+ch_sra_ids   // channel: [ val(meta), val(id) ]
+
+// Runs prefetch to download reads for each sample/accession listed
+//  in the 'ch_sra_ids' channel
+SRATOOLS_PREFETCH ( ch_sra_ids, ch_ncbi_settings, ch_dbgap_key )
+
+// Creates a channel, 'fetches', which contains all the successfully downloaded 
+//  sample/accessions (the SRATOOLS_PREFETCH.out.sra) and any remaining 
+//  sample/accessions that are not found in SRATOOLS_PREFETCH.out.sra 
+//  (i.e., that were not successfully downloaded)
+fetches = ch_sra_ids.join(SRATOOLS_PREFETCH.out.sra, remainder: true)
+
+// Creates a channel containing a list of only the failed sample/accessions 
+//  (those with a value of null in 'fetches' channel)
+failed_fetches = fetches.filter { it[2] == null }.toList()
+
+// Generates a report of failed sample/accessions
+PREFETCH_CHECKER (failed_fetches)
+```
+
+The code above is used to identify any sample/accessions (from the input channel `ch_sra_ids`) which failed in the `SRATOOLS_PREFETCH` step (did not return a value in the output of this process since errors are ignored in this process). The failed sample/accessions are passed to `PREFETCH_CHECKER` to generate an **error report**.
+
+### 5.2.2. Creation of an error report
+
+We would recommed a pipeline creates an error report output file which indicates the sample impacted by the error and the type of error/other information that may be useful for someone running the pipeline. This error report should be stored within IRIDA Next for users to download and review once a pipeline completes.
+
+#### 5.2.2.1. An `errors.csv` error report
+
+One recommended file format for recording errors is in a CSV file, which records errors for a sample within a single row. For example:
+
+| sample        | sample_name | success | message                                            |
+|---------------|-------------|---------|----------------------------------------------------|
+| INXT_SAM_1234 | SampleA     | true    |                                                    |
+| INXT_SAM_2345 | SampleB     | false   | Genome length not within expected range [MIN, MAX] |
+
+The `errors.csv` file should be attached as one of the outputs stored in IRIDA Next so that users of the pipeline can review this file when a pipeline completes. Note, it is up to the pipeline developer if it makes sense to include all samples in this file with a column indicating if there was an error, or to only included samples with errors in this CSV file.
+
+### 5.2.3. Indicating errors in sample metadata
+
+Either as an alternative, or in addition to storing an error report in CSV format, errors for a pipeline can be indicated within metadata key/values for a sample, which are stored in IRIDA Next.
+
+For example, the below shows an `iridanext.output.json` file containing some metadata used to indicate an error.
+
+```json
+{
+  "metadata": {
+    "samples": {
+      "INXT_SAM_1234": {
+        "success": true,
+      },
+      "INXT_SAM_2345": {
+        "success": false,
+        "message": "Genome length not within expected range [MIN, MAX]"
+      }
+    }
+  }
+}
+```
+
+This method has the advantage of making it easier for someone to view errors across many pipeline runs through the IRIDA Next metadata table. However, the disadvantage is that the metadata table will only show the error for the most recent pipeline run for a sample (other metadata key/value pairs from previous runs of the same pipeline will be overwritten). This could be avoided by setting unique metadata keys per pipeline run, though consideration should be made on how this data will be used downstream.
+
+# 6. Modules
 
 [Modules in Nextflow][nextflow-modules] are scripts that can contain functions, processes, or workflows.
 
-## 5.1. nf-core modules
+## 6.1. nf-core modules
 
 Nf-core contains a number of modules for processes to execute different bioinformatics tools ([nf-core modules][]). Where possible, please use nf-core modules within your pipeline. These can be installed via running the following command from the [nf-core tools][nf-core-modules-install].
 
@@ -490,11 +600,11 @@ Nf-core contains a number of modules for processes to execute different bioinfor
 nf-core modules install [NAME]
 ```
 
-## 5.2. Local modules
+## 6.2. Local modules
 
 If it is not possible to use existing nf-core modules, you can create your own modules local to your pipeline in the `modules/local/` directory. Please see the [nf-core contributing modules][nf-core-contributing-modules] documentation for expectations on how modules should behave. Local modules won't need to follow all of these guidelines (such as uploading to the list of nf-core approved modules), but the behaviour of inputs, parameters, and outputs of a process should be followed as closely as possible.
 
-### 5.2.1. Module software requirements
+### 6.2.1. Module software requirements
 
 Each module should define its software requirements as a singularity/docker container. This requires using the `container` keyword in the process. For example:
 
@@ -512,7 +622,7 @@ docker.registry =  'quay.io'
 
 For more information, see the [Nextflow containers][] documentation and the [nf-core modules software requirements][] guide.
 
-### 5.2.2 Configuring Module Software with Private or Alternate Container Registries
+### 6.2.2 Configuring Module Software with Private or Alternate Container Registries
 
 To configure a private or alternate container registry, the standard practice is to set the `.registry` option to point to the desired registry in the `nextflow.config` file. For example:
 
@@ -535,7 +645,7 @@ process.ext.override_configured_container_registry = true
 
 This custom extension allows us to define configurations beyond the standard Nextflow syntax, tailored to the needs of specific processes in the workflow. When a process runs, the value of `process.ext.override_configured_container_registry` is accessed within the `container` directive as `task.ext.override_configured_container_registry`. The `task` context refers to the specific instance of a process execution, encompassing all relevant attributes and extensions for that instance. This setup ensures that any custom settings, such as overriding the default container registries, are correctly applied during the execution of the pipeline.
 
-#### 5.2.2.1 Example: Overriding Container Registries with the `container` Directive
+#### 6.2.2.1 Example: Overriding Container Registries with the `container` Directive
 
 To specify an alternative registry for a process, include a conditional check with `task.ext.override_configured_container_registry` in the nested ternary operator of the `container` directive. For example:
 
@@ -551,7 +661,7 @@ In this example, setting the `task.ext.override_configured_container_registry` i
 
 By using `!= false` in the condition, we ensure that the process will follow the alternative registry path whenever `task.ext.override_configured_container_registry` is set to any value other than `false` (including `true` or `null`). This approach provides flexibility by allowing different registry configurations to be applied without needing explicit overrides for every scenario.
 
-#### 5.2.2.2 Managing Optional Container Registry Overrides
+#### 6.2.2.2 Managing Optional Container Registry Overrides
 
 To provide greater flexibility in managing the `process.ext.override_configured_container_registry` setting, users can create an optional configuration file separate from the `nextflow.config` to define whether an alternative container registry can be used in the pipeline. This file can then be included into the Nextflow pipeline by using the `-c` option on the commandline.
 
@@ -577,11 +687,11 @@ This method allows for dynamic adjustment of container settings, enabling flexib
 
 <a name="resource-requirements"></a>
 
-# 6. Resource requirements
+# 7. Resource requirements
 
 To define computational resource requirements for each process, we will follow the [nf-core resource][nf-core-module-resource] standards as much as possible, where resources are adjusted by a `label` in each `process` of a pipeline. The pipeline developer will be responsible for setting an appropriate `label` in each process of the NextFlow pipeline to appropriatly define required resources. In addition, the developer is responsible for tuning any resources defined in the `config/base.config` file, as described in the [nf-core tuning workflow resources][] documentation.
 
-## 6.1. Process resource label
+## 7.1. Process resource label
 
 The pipeline developer will add a `label` to each `process` of a NextFlow pipeline to adjust resources. For example:
 
@@ -593,7 +703,7 @@ process name {
 }
 ```
 
-### 6.1.1. Accepted resource labels
+### 7.1.1. Accepted resource labels
 
 The following labels will be accepted:
 
@@ -603,21 +713,21 @@ The following labels will be accepted:
 - `process_high`
 - `process_very_high`: This label is an addition over those provided by nf-core to be used for situations where a process needs a lot of resources beyond `process_high`.
 
-## 6.2. Tuning resource limits with parameters
+## 7.2. Tuning resource limits with parameters
 
 Nf-core provides the capability to adjust the maximum resources given to processes in a pipeline using parameters: `--max_cpus`, `--max_memory`, and `--max_time`. Pipeline developers will be responsible for making sure thse parameters are available in the `nextflow.config` file. See the [nf-core max resources][] documentation for more details.
 
-# 7. Testing
+# 8. Testing
 
 Nextflow pipelines should include test suites, linting, and execution of these tests automatically on merging of new code (i.e., continuous integration). These files should be included automatically if the pipeline is generated using the [nf-core create][nf-core-create] command. A description of these different tests are included in the [nf-core contributing][nf-core-contributing-github-actions] documentation.
 
-## 7.1. Nextflow test profile
+## 8.1. Nextflow test profile
 
 In particular, a `test` profile should be setup in Nextflow so that the pipeline can be executed with `nextflow [NAME] -profile test,docker`.
 
 Parameters for the `test` profile should be specified in the `conf/test.config` file. This can reference data stored elsewhere (e.g., on GitHub). For example, see the `test.config` for the IRIDA Next sample pipeline <https://github.com/phac-nml/iridanext-example-nf/blob/main/conf/test.config>.
 
-## 7.2. Unit/integration tests
+## 8.2. Unit/integration tests
 
 It is also expected to include with each pipeline a set of unit/integration tests. These can be implemented by using [nf-test][].
 
@@ -635,9 +745,9 @@ nf-test init
 
 The nf-core templates for pipelines should include a GitHub actions task for running `nf-test` on pull-requests. Please refer to the [nf-test documentation][nf-test] for more details.
 
-# 8. Executing pipelines
+# 9. Executing pipelines
 
-## 8.1. Standalone execution
+## 9.1. Standalone execution
 
 Pipelines should be configured so that they can be executed by:
 
@@ -647,35 +757,11 @@ nextflow run [NAME] --input inputsheet.csv --outdir output [OTHER PARAMETERS]
 
 Where `inputsheet.csv` is the CSV file containing samples (or other input data) and `output` is the directory containing output data. Other parameters can be included, though reasonable defaults should be set so the number of required parameters is as minimal as possible.
 
-## 8.2. Execution via GA4GE WES
+## 9.2. Execution via GA4GE WES
 
-[IRIDA Next][irida-next] will make use of the [GA4GH Workflow Execution Service][ga4gh-wes] API for executing pipelines. This will require making a `POST` request to **RunWorkflow** with JSON that looks similar to the following:
+[IRIDA Next][irida-next] will make use of the [GA4GH Workflow Execution Service][ga4gh-wes] API for executing pipelines. This will require making a `POST` request to **RunWorkflow**. See [WES RunWorkflow][wes-run-workflow] for more details.
 
-```json
-{
-  "workflow_params": {
-    "--input": "https://url-to-input.csv",
-    "-r": "REVISION",
-    "[PARAMETERS]": "[PARAMETER VALUES]"
-  },
-  "workflow_type": "DSL2",
-  "workflow_type_version": "22.10.7",
-  "tags": {
-    "createdBy": "Test",
-    "group": "Test"
-  },
-  "workflow_engine_parameters": {
-    "engine": "nextflow",
-    "execute_loc": "azure"
-  },
-  "workflow_url": "https://github.com/phac-nml/iridanext-example-nf",
-  "workflow_attachment": ""
-}
-```
-
-Here, parameters are specified by key/value pairs under `workflow_params` and the location of the workflow code is given in `workflow_url`. See [WES RunWorkflow][wes-run-workflow] for more details.
-
-## 8.3. Running pipelines in a local instance of IRIDA Next
+## 9.3. Running pipelines in a local instance of IRIDA Next
 
 For detailed instructions and configuration options, please refer to the the guide for setting up a local instance of IRIDA Next:
 
@@ -692,19 +778,19 @@ The guide includes step-by-step instructions for installing required dependencie
   - Register Pipelines: Add and register Nextflow pipelines in IRIDA Next.
   - Run Local Instance: Start the web application and access it via a web browser.
 
-# 9. Resources
+# 10. Resources
 
-## 9.1. Pipeline development tutorial
+## 10.1. Pipeline development tutorial
 
 A tutorial on developing a pipeline is available at [IRIDA Next nf-core pipeline tutorial][pipeline-tutorial].
 
-## 9.2. List of pipelines
+## 10.2. List of pipelines
 
 An example pipeline that conforms to these standards is available at <https://github.com/phac-nml/iridanext-example-nf>.
 
 Other pipelines are listed at <https://github.com/phac-nml/nf-pipelines>.
 
-## 9.3. Other resources
+## 10.3. Other resources
 
 - [PHA4GE proposed pipeline standards][pha4ge-pipeline-standards]: Proposed pipeline standards from the PHA4GE Bioinformatics Pipelines & Visualization Working Group
 - [Government of Canada: Guide for Publishing Open Source Code][gov-canada-open-source-software]
@@ -712,17 +798,17 @@ Other pipelines are listed at <https://github.com/phac-nml/nf-pipelines>.
 - [nfcore parameters][nfcore-parameters]
 - [GA4GH Workflow Execution Service][ga4gh-wes]
 
-# 10. Future pipeline integration ideas
+# 11. Future pipeline integration ideas
 
 Additional ideas for integrating pipelines in the future can be found in the [IRIDA Next pipeline integration ideas][iridanext-ideas] document.
 
 <a name="security"></a>
 
-# 11. Security practices
+# 12. Security practices
 
 Please maintain good software security practices with pipeline code to be published. In particular, never store plain text passwords, API keys, ssh keys, or otherwise confidential information in software/pipelines which are distributed publicly.
 
-## 11.1. Automated repository scanning (recommendations)
+## 12.1. Automated repository scanning (recommendations)
 
 There exist automated tools to aid in maintining secure code and identifying potential issues. The [GitHub Securing your repository][github-secure-repository] documentation provides detailed information on how to secure your GitHub repository, which includes automated scanning. In particular, some recommendations include:
 
@@ -740,11 +826,11 @@ Once enabled, security alerts appear in the **Security** tab on GitHub.
 
 For more security recommendations, please see the [PHA4GE pipeline guidelines][pha4ge-pipeline-security].
 
-# 12. Publishing guidelines
+# 13. Publishing guidelines
 
 Our intention is to follow, as much as possible, the standards and practices set out by nf-core. However, we leave it as optional to actually publish pipelines/modules/subworkflows with the official nf-core repositories. We would encourage this where it makes sense in order to support re-use and giving back to the community (please refer to the [nf-core publishing requirements][] for the guidelines in this case). However, it is perfectly acceptible to publish pipelines/modules/subworkflows in separate Git repositories outside of nf-core. Please see the [if the guidelines don't fit][nf-core-external-development] and [using nf-core components outside of nf-core][nf-core-outside-nf-core] sections of the nf-core documentation for more information on this scenario and other locations to list your pipeline.
 
-# 13. Legal
+# 14. Legal
 
 Copyright 2023 Government of Canada
 
@@ -804,3 +890,5 @@ specific language governing permissions and limitations under the License.
 [nf-iridanext]: https://github.com/phac-nml/nf-iridanext
 [nf-test]: https://www.nf-test.com/
 [def]: #52
+[errorStrategy]: https://www.nextflow.io/docs/latest/reference/process.html#errorstrategy
+[fetchdatairidanext]: https://github.com/phac-nml/fetchdatairidanext
