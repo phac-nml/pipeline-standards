@@ -559,8 +559,8 @@ One recommended file format for recording errors is in a CSV file, which records
 
 | sample        | sample_name | success | message                                            |
 |---------------|-------------|---------|----------------------------------------------------|
-| INXT_SAM_1234 | SampleA     | TRUE    |                                                    |
-| INXT_SAM_2345 | SampleB     | FALSE   | Genome length not within expected range [MIN, MAX] |
+| INXT_SAM_1234 | SampleA     | true    |                                                    |
+| INXT_SAM_2345 | SampleB     | false   | Genome length not within expected range [MIN, MAX] |
 
 The `errors.csv` file should be attached as one of the outputs stored in IRIDA Next so that users of the pipeline can review this file when a pipeline completes. Note, it is up to the pipeline developer if it makes sense to include all samples in this file with a column indicating if there was an error, or to only included samples with errors in this CSV file.
 
@@ -575,10 +575,10 @@ For example, the below shows an `iridanext.output.json` file containing some met
   "metadata": {
     "samples": {
       "INXT_SAM_1234": {
-        "success": TRUE,
+        "success": true,
       },
       "INXT_SAM_2345": {
-        "success": FALSE,
+        "success": false,
         "message": "Genome length not within expected range [MIN, MAX]"
       }
     }
