@@ -491,7 +491,7 @@ There are a number of different options for error handling of pipelines launched
 
 ## 5.1. Unrecoverable errors
 
-An **unrecoverable error** is an error in a pipeline that would prevent the pipeline to continue running. In Nextflow the [errorStrategy][] directive can be used to configure the behaviour of Nextflow when encountering an error in an individual process. By default, the *errorStrategy* is set to `terminate`, which will terminate the pipeline when an error in a process is encountered. In IRIDA Next, a terminated pipeline will appear with an `error` status and won't produce any output.
+An **unrecoverable error** is an error in a pipeline that would prevent the pipeline from finishing, completing, or continuing to run. In Nextflow the [errorStrategy][] directive can be used to configure the behaviour of Nextflow when encountering an error in an individual process. By default, the *errorStrategy* is set to `terminate`, which will terminate the pipeline when an error in a process is encountered. In IRIDA Next, a terminated pipeline will appear with an `error` status and won't produce any output.
 
 Alternatively, processes can be retried using the `retry` *errorStrategy*. This is often configured in the `conf/base.config` configuration in nf-core pipeline templates.
 
@@ -586,7 +586,7 @@ For example, the below shows an `iridanext.output.json` file containing some met
 }
 ```
 
-This method has the advantage of making it easier for someone to view errors across many pipeline runs through the IRIDA Next metadata table. However, the disadvantage is that the metadata table will only show the error for the most recent pipeline run for a sample (other metadata key/value pairs from previous pipeline runs will be overwritten).
+This method has the advantage of making it easier for someone to view errors across many pipeline runs through the IRIDA Next metadata table. However, the disadvantage is that the metadata table will only show the error for the most recent pipeline run for a sample (other metadata key/value pairs from previous runs of the same pipeline will be overwritten). This could be avoided by setting unique metadata keys per pipeline run, though consideration should be made on how this data will be used downstream.
 
 # 6. Modules
 
