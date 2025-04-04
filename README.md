@@ -484,11 +484,22 @@ There are a number of different options for error handling of pipelines launched
 
 ## 5.1. Unrecoverable errors
 
-An **unrecoverable error** is an error in a pipeline that would prevent the pipeline to continue running. 
+An **unrecoverable error** is an error in a pipeline that would prevent the pipeline to continue running. In Nextflow the [errorStrategy][] directive can be used to configure the behaviour of Nextflow when encountering an error in an individual process. By default, the *errorStrategy* is set to `terminate`, which will terminate the pipeline when an error in a process is encountered. In IRIDA Next, a terminated pipeline will appear with an `error` status and won't produce any output.
+
+Alternatively, processes can be retried using the `retry` *errorStrategy*. This is often configured in the `conf/base.config` configuration in nf-core pipeline templates.
+
+As an example, for the [fetchdatairidanext][] pipeline, [this block of code](https://github.com/phac-nml/fetchdatairidanext/blob/6be44f6cdf101bdd51c5a612afb85633b3ad2a8c/conf/base.config#L17-L18) is used to retry a process at least once, before setting *errorStrategy* to `finish` (will wait until already submitted processes complete before terminating the pipeline with an error):
+
+```groovy
+process {
+  errorStrategy = { task.exitStatus in ((130..145) + 104) ? 'retry' : 'finish' }
+  maxRetries    = 1
+}
+```
 
 ## 5.2. Recoverable errors
 
-A **recoverable error** is an error that a pipeline is able to recover from and continue running, generating some output in the end. Identifying and recovering from these types of errors within a pipeline is up to the pipeline developer, so long as the pipeline is able to successfully run and generate output along with an `iridanext.output.json` file for storing results in IRIDA Next.
+A **recoverable error** is an error that a pipeline is able to recover from and continue running, generating some output in the end which can be stored in IRIDA Next. Identifying and recovering from these types of errors within a pipeline is up to the pipeline developer, so long as the pipeline is able to successfully run and generate output along with an `iridanext.output.json` file for storing results in IRIDA Next.
 
 ### 5.2.1. Identifying a recoverable error
 
