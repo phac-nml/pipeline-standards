@@ -26,9 +26,9 @@ This document describes the specification for developing [IRIDA Next][irida-next
       - [2.3.3.1. Example samplesheet and JSON schema for a metadata value](#2331-example-samplesheet-and-json-schema-for-a-metadata-value)
 - [3. Parameters](#3-parameters)
   * [3.1. Overview](#31-overview)
-    + [3.2. Simple value parameters](#32-simple-value-parameters)
-    + [3.3. Referencing external data](#33-referencing-external-data)
-    + [3.4. Overriding parameters in IRIDA Next](#34-overriding-parameters-in-irida-next)
+  * [3.2. Simple value parameters](#32-simple-value-parameters)
+  * [3.3. Referencing external data](#33-referencing-external-data)
+  * [3.4. Overriding parameters in IRIDA Next](#34-overriding-parameters-in-irida-next)
 - [4. Output](#4-output)
   * [4.1. Files](#41-files)
   * [4.2. IRIDA Next JSON](#42-irida-next-json)
@@ -359,7 +359,7 @@ params {
 
 This example illustrates two major types of parameters: those that contain **simple values** (e.g., integers) and those that reference **external data** (e.g., databases).
 
-### 3.2. Simple value parameters
+## 3.2. Simple value parameters
 
 These parameters are those that contain values that don't reference any external data, that is primitive types (e.g., strings, numbers).
 
@@ -392,7 +392,7 @@ Another example is the **kmer_len** parameter in the [speciesabundance][] pipeli
 
 In this case, the **type** is still `integer`, but the **enum** keyword is used to restrict the set of possible values.
 
-### 3.3. Referencing external data
+## 3.3. Referencing external data
 
 The other type of parameter is one which can be used to reference external data (e.g., databases or other external files required to run the pipeline). These should be defined as a `string` type and use the **format** keyword to further refine how to interpret the type (see the [nf-schema format documentation][nf-schema format]).
 
@@ -419,7 +419,7 @@ When the pipeline is loaded within [IRIDA Next][irida-next], this type of parame
 
 In order to configured a selectable list of external data in IRIDA Next, you can refer to the following section.
 
-### 3.4. Overriding parameters in IRIDA Next
+## 3.4. Overriding parameters in IRIDA Next
 
 Pipelines are registered within IRIDA Next by adding to a [pipelines.json][irida-next-pipelines] file. For example:
 
