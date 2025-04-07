@@ -417,6 +417,69 @@ In order to configured a selectable list of external data in IRIDA Next, you can
 
 ### 3.4. Overriding parameters in IRIDA Next
 
+Pipelines are registered within IRIDA Next by adding to a [pipelines.json][irida-next-pipelines] file. For example:
+
+**pipelines.json**
+```json
+{
+  "url": "https://github.com/phac-nml/speciesabundance",
+  "name": "phac-nml/speciesabundance",
+  "description": "IRIDA Next speciesabundance",
+  "versions": [
+    {
+      "name": "2.2.0"
+    }
+  ]
+}
+```
+
+In addition to registering pipelines, the `pipelines.json` file can be used to override any of the Nextflow JSON Schema elements for a particular pipeline (e.g., default values, hidding parameters from IRIDA Next). For more information on this, please refer to the [IRIDA Next Schema Overrides documentation][irida-next-schema-overrides].
+
+One particular scenario that is well-suited for configuring a drop-down list of configured databases/external data in IRIDA Next is by overriding the parameter in the IRIDA Next `pipelins.json` file to switch to an enumerated type containing a list of pre-configured databases and labels to display in IRIDA Next. 
+
+For example, for the [speciesabundance][] pipeline:
+
+```json
+{
+  "url": "https://github.com/phac-nml/speciesabundance",
+  "name": "phac-nml/speciesabundance",
+  "description": "IRIDA Next speciesabundance",
+  "overrides": {
+    "definitions": {
+      "databases": {
+        "properties": {
+          "database": {
+            "enum": [
+              ["Database 1 label", "/path/to/database1/"],
+              ["Database 2 label", "/path/to/database2/"]
+            ]
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+Here, the `enum` section in the JSON file contains a list of 2-element lists with the label and path to the database:
+
+```json
+"enum": [
+  ["Database 1 label", "/path/to/database1/"],
+  ["Database 2 label", "/path/to/database2/"]
+]
+```
+
+The format of each element of the enum `["label", "path/uri"]` is:
+* `"label"`: The label to display in IRIDA Next.
+* `"path/uri"`: The local path or URI for the parameter (this value gets passed to Nextflow as e.g., `--database /path`).
+
+IRIDA Next would render the above example as a drop-down menu with two elements:
+
+![species-abundance-databases-selection.png]
+
+Selecting **Database 1 label** in IRIDA Next and submitting the pipeline will then pass `--database /path/to/database1/` as a parameter to the pipeline in Nextflow.
+
 <a name="output"></a>
 
 # 4. Output
@@ -992,3 +1055,6 @@ specific language governing permissions and limitations under the License.
 [nf-schema format]: https://nextflow-io.github.io/nf-schema/latest/nextflow_schema/nextflow_schema_specification/#format
 [Azure Blob Storage]: https://www.nextflow.io/docs/latest/azure.html#azure-blob-storage
 [species-abundance-databases.png]: images/speciesabundance-databases.png
+[species-abundance-databases-selection.png]: images/speciesabundance-databases-selection.png
+[irida-next-pipelines]: https://phac-nml.github.io/irida-next/docs/configuration/pipelines
+[irida-next-schema-overrides]: https://phac-nml.github.io/irida-next/docs/configuration/pipelines#schema-overrides
