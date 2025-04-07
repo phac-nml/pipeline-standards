@@ -28,7 +28,9 @@ This document describes the specification for developing [IRIDA Next][irida-next
   * [3.1. Overview](#31-overview)
   * [3.2. Simple value parameters](#32-simple-value-parameters)
   * [3.3. Referencing external data](#33-referencing-external-data)
-  * [3.4. Overriding parameters in IRIDA Next](#34-overriding-parameters-in-irida-next)
+  * [3.4. Pipelines and parameters in IRIDA Next](#34-pipelines-and-parameters-in-irida-next)
+    + [3.4.1. Loading pipelines](#341-loading-pipelines)
+    + [3.4.2. Overriding parameters](#342-overriding-parameters)
 - [4. Output](#4-output)
   * [4.1. Files](#41-files)
   * [4.2. IRIDA Next JSON](#42-irida-next-json)
@@ -419,7 +421,9 @@ When the pipeline is loaded within [IRIDA Next][irida-next], this type of parame
 
 In order to configured a selectable list of external data in IRIDA Next, you can refer to the following section.
 
-## 3.4. Overriding parameters in IRIDA Next
+## 3.4. Pipelines and parameters in IRIDA Next
+
+### 3.4.1. Loading pipelines
 
 Pipelines are registered within IRIDA Next by adding to a [pipelines.json][irida-next-pipelines] file. For example:
 
@@ -436,6 +440,12 @@ Pipelines are registered within IRIDA Next by adding to a [pipelines.json][irida
   ]
 }
 ```
+
+When IRIDA Next is started, it will read the `pipelines.json` file, download a local copy of the pipeline `nextflow_schema.json` and `assets/schema_input.json` files within the specified repository and version (tag or branch) of a pipeline, and use these JSON Schema files to render a user interface for the pipeline.
+
+![irida-next-species-abundance.png][]
+
+### 3.4.2. Overriding parameters
 
 In addition to registering pipelines, the `pipelines.json` file can be used to override any of the Nextflow JSON Schema elements for a particular pipeline (e.g., default values, hidding parameters from IRIDA Next). For more information on this, please refer to the [IRIDA Next Schema Overrides documentation][irida-next-schema-overrides].
 
@@ -1058,6 +1068,7 @@ specific language governing permissions and limitations under the License.
 [nf-schema]: https://nextflow-io.github.io/nf-schema/latest/
 [nf-schema format]: https://nextflow-io.github.io/nf-schema/latest/nextflow_schema/nextflow_schema_specification/#format
 [Azure Blob Storage]: https://www.nextflow.io/docs/latest/azure.html#azure-blob-storage
+[irida-next-species-abundance.png]: images/irida-next-species-abundance.png
 [species-abundance-databases.png]: images/speciesabundance-databases.png
 [species-abundance-databases-selection.png]: images/speciesabundance-databases-selection.png
 [irida-next-pipelines]: https://phac-nml.github.io/irida-next/docs/configuration/pipelines
