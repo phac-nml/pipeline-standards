@@ -307,20 +307,107 @@ IRIDA Next will attempt to autopopulate the `organism` column in the samplesheet
 
 # 3. Parameters
 
+## 3.1. Overview
+
 Parameters within a pipeline are defined in the `nextflow.config` file (under the `params` scope), and then the `nextflow_schema.json` file is updated to contain the parameters by running `nf-core schema build`. This is described in the [nf-core contributing to pipelines][nf-core-contributing-to-pipelines] documentation.
 
-As an example, the following is a subset of parameters from the [iridanext-example-nf][] pipeline.
+As an example, the following are excerpts from the [speciesabundance][] pipeline.
 
-```
+**nextflow.config**
+```groovy
 params {
+    // Input options
     input                      = null
-    genome                     = 'hg38'
-    igenomes_base              = 's3://ngi-igenomes/igenomes'
-    igenomes_ignore            = false
+
+    //Pipeline parameters
+    database                   = null
+    kraken2_db                 = null
+    bracken_db                 = null
+    taxonomic_level            = 'S'
+    kmer_len                   = 100
+    top_n                      = 5
 }
 ```
 
-The full set of parameters can be found in <https://github.com/phac-nml/iridanext-example-nf/blob/main/nextflow.config>.
+**nextflow_schema.json**
+```json
+"databases": {
+    "title": "Databases",
+    "type": "object",
+    "description": "The Kraken2 and Bracken databases required for analysis.",
+    "fa_icon": "fas fa-terminal",
+    "default": "",
+    "properties": {
+        "database": {
+            "type": "string",
+            "pattern": "^\\S+$",
+            "exists": true,
+            "format": "directory-path",
+            "description": "Path to database containing both the Kraken2 and Bracken database files (do not use symlinks)"
+        }
+    }
+}
+```
+
+- The **input** parameter is used by each pipeline to pass the `samplesheet.csv` file containing samples and associated data. This is described in more detail in the [Input](#input) section.
+- The **database** parameter defines a path/URI to external files needed by the pipeline. In this case a directory of Kraken2/Bracken database files (the **kraken2_db** and **bracken_db** parameters in this pipeline allow passing the locations to Kraken2 and Bracken files separately).
+- The **taxonomic_level**, **kmer_len**, and **top_n** are parameters providing additional controls over the pipeline and require passing in strings or numbers respectively (parameter type is defined in the `nextflow_schema.json` file).
+
+This example illustrates two major types of parameters: those that contain **simple values** (e.g., integers) and those that reference **external data** (e.g., databases).
+
+### 3.2. Simple value parameters
+
+These parameters are those that contain values that don't reference any external data, that is primitive types (e.g., strings, numbers).
+
+The type of the parameter is defined in the `nextflow_schema.json` file, following the [nf-schema][] Nextflow JSON schema syntax.
+
+For example, below is the JSON Schema entry in the [speciesabundance][] pipeline for the **top_n** parameter (an integer).
+
+```json
+"top_n": {
+    "type": "integer",
+    "default": 5,
+    "description": "Defines the number of top results to keep from the BRACKEN report",
+    "minimum": 1
+}
+```
+
+The type is specified type **type** in the JSON Schmea (an `integer`), and the keywords **minimum** (and **maximum**) can be used to specify the range of acceptable values.
+
+Another example is the **kmer_len** parameter in the [speciesabundance][] pipeline.
+
+```json
+"kmer_len": {
+    "type": "integer",
+    "errorMessage": "kmer_len must be provided as one of: 50, 75, 100, 150, 200, 250, or 300",
+    "enum": [50, 75, 100, 150, 200, 250, 300],
+    "description": "Requested kmer length for the BRACKEN distribution file used during abundance estimation",
+    "default": 100
+}
+```
+
+In this case, the **type** is still `integer`, but the **enum** keyword is used to restrict the set of possible values.
+
+### 3.3. Referencing external data
+
+The other type of parameter is one which can be used to reference external data (e.g., databases or other neccessary files to run the pipeline). These should be defined as a `string` type and use the **format** keyword to further refine how to interpret the type (see the [nf-schema format documentation][nf-schema format]).
+
+For example, in the [speciesabundance][] pipeline.
+
+```json
+"database": {
+    "type": "string",
+    "pattern": "^\\S+$",
+    "exists": true,
+    "format": "directory-path",
+    "description": "Path to database containing both the Kraken2 and Bracken database files (do not use symlinks)"
+}
+```
+
+The above specifies that the value of the parameter `--database` is a string which is interpreted as a `directory-path`.
+
+* This could be a **local path**: `--database /path/to/kraken_bracken_database/`
+* Or, this could be a **URI** specifying some resource. For example, using [Azure Blob Storage][]: `--database az://location/of/kraken_braken_database/`.
 
 <a name="output"></a>
 
@@ -892,3 +979,7 @@ specific language governing permissions and limitations under the License.
 [def]: #52
 [errorStrategy]: https://www.nextflow.io/docs/latest/reference/process.html#errorstrategy
 [fetchdatairidanext]: https://github.com/phac-nml/fetchdatairidanext
+[speciesabundance]: https://github.com/phac-nml/speciesabundance
+[nf-schema]: https://nextflow-io.github.io/nf-schema/latest/
+[nf-schema format]: https://nextflow-io.github.io/nf-schema/latest/nextflow_schema/nextflow_schema_specification/#format
+[Azure Blob Storage]: https://www.nextflow.io/docs/latest/azure.html#azure-blob-storage
