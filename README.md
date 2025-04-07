@@ -390,7 +390,7 @@ In this case, the **type** is still `integer`, but the **enum** keyword is used 
 
 ### 3.3. Referencing external data
 
-The other type of parameter is one which can be used to reference external data (e.g., databases or other neccessary files to run the pipeline). These should be defined as a `string` type and use the **format** keyword to further refine how to interpret the type (see the [nf-schema format documentation][nf-schema format]).
+The other type of parameter is one which can be used to reference external data (e.g., databases or other external files required to run the pipeline). These should be defined as a `string` type and use the **format** keyword to further refine how to interpret the type (see the [nf-schema format documentation][nf-schema format]).
 
 For example, in the [speciesabundance][] pipeline.
 
@@ -408,6 +408,14 @@ The above specifies that the value of the parameter `--database` is a string whi
 
 * This could be a **local path**: `--database /path/to/kraken_bracken_database/`
 * Or, this could be a **URI** specifying some resource. For example, using [Azure Blob Storage][]: `--database az://location/of/kraken_braken_database/`.
+
+When the pipeline is loaded within [IRIDA Next][irida-next], this type of parameter is rendered as a text box which can be used to fill in the path or URI to external data:
+
+![species-abundance-databases.png][]
+
+In order to configured a selectable list of external data in IRIDA Next, you can refer to the following section.
+
+### 3.4. Overriding parameters in IRIDA Next
 
 <a name="output"></a>
 
@@ -983,3 +991,4 @@ specific language governing permissions and limitations under the License.
 [nf-schema]: https://nextflow-io.github.io/nf-schema/latest/
 [nf-schema format]: https://nextflow-io.github.io/nf-schema/latest/nextflow_schema/nextflow_schema_specification/#format
 [Azure Blob Storage]: https://www.nextflow.io/docs/latest/azure.html#azure-blob-storage
+[species-abundance-databases.png]: images/speciesabundance-databases.png
