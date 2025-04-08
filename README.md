@@ -322,10 +322,10 @@ As an example, the following are excerpts from the [speciesabundance][] pipeline
 **nextflow.config**
 ```groovy
 params {
-    // Input options
+    // Input parameters
     input                      = null
 
-    //Pipeline parameters
+    // Pipeline parameters
     database                   = null
     kraken2_db                 = null
     bracken_db                 = null
@@ -378,7 +378,7 @@ For example, below is the JSON Schema entry in the [speciesabundance][] pipeline
 }
 ```
 
-The type is specified type **type** in the JSON Schmea (an `integer`), and the keywords **minimum** (and **maximum**) can be used to specify the range of acceptable values.
+The type is specified type **type** in the JSON Schema (an `integer`), and the keywords **minimum** (and **maximum**) can be used to specify the range of acceptable values.
 
 Another example is the **kmer_len** parameter in the [speciesabundance][] pipeline.
 
@@ -419,7 +419,7 @@ When the pipeline is loaded within [IRIDA Next][irida-next], this type of parame
 
 ![species-abundance-databases.png][]
 
-In order to configured a selectable list of external data in IRIDA Next, you can refer to the following section.
+In order to configure a selectable list of external data in IRIDA Next, you can refer to the following section.
 
 ## 3.4. Pipelines and parameters in IRIDA Next
 
@@ -449,7 +449,7 @@ When IRIDA Next is started, it will read the `pipelines.json` file, download a l
 
 In addition to registering pipelines, the `pipelines.json` file can be used to override any of the Nextflow JSON Schema elements for a particular pipeline (e.g., default values, hidding parameters from IRIDA Next). For more information on this, please refer to the [IRIDA Next Schema Overrides documentation][irida-next-schema-overrides].
 
-One particular scenario that is well-suited for configuring a drop-down list of configured databases/external data in IRIDA Next is by overriding the parameter in the IRIDA Next `pipelins.json` file to switch to an enumerated type containing a list of pre-configured databases and labels to display in IRIDA Next. 
+Overriding a database/external data parameter and configuring it as an enumerated type in the IRIDA Next `pipelines.json` can be a way to set up a drop-down list of pre-configured databases and labels to display in the IRIDA Next interface.
 
 For example, for the [speciesabundance][] pipeline:
 
