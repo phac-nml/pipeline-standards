@@ -25,6 +25,12 @@ This document describes the specification for developing [IRIDA Next][irida-next
     + [2.3.3. Defining selection of input metadata in IRIDA Next](#233-defining-selection-of-input-metadata-in-irida-next)
       - [2.3.3.1. Example samplesheet and JSON schema for a metadata value](#2331-example-samplesheet-and-json-schema-for-a-metadata-value)
 - [3. Parameters](#3-parameters)
+  * [3.1. Overview](#31-overview)
+  * [3.2. Simple value parameters](#32-simple-value-parameters)
+  * [3.3. Referencing external data](#33-referencing-external-data)
+  * [3.4. Pipelines and parameters in IRIDA Next](#34-pipelines-and-parameters-in-irida-next)
+    + [3.4.1. Loading pipelines](#341-loading-pipelines)
+    + [3.4.2. Overriding parameters](#342-overriding-parameters)
 - [4. Output](#4-output)
   * [4.1. Files](#41-files)
   * [4.2. IRIDA Next JSON](#42-irida-next-json)
@@ -307,20 +313,186 @@ IRIDA Next will attempt to autopopulate the `organism` column in the samplesheet
 
 # 3. Parameters
 
+## 3.1. Overview
+
 Parameters within a pipeline are defined in the `nextflow.config` file (under the `params` scope), and then the `nextflow_schema.json` file is updated to contain the parameters by running `nf-core schema build`. This is described in the [nf-core contributing to pipelines][nf-core-contributing-to-pipelines] documentation.
 
-As an example, the following is a subset of parameters from the [iridanext-example-nf][] pipeline.
+As an example, the following are excerpts from the [speciesabundance][] pipeline.
 
-```
+**nextflow.config**
+```groovy
 params {
+    // Input parameters
     input                      = null
-    genome                     = 'hg38'
-    igenomes_base              = 's3://ngi-igenomes/igenomes'
-    igenomes_ignore            = false
+
+    // Pipeline parameters
+    database                   = null
+    kraken2_db                 = null
+    bracken_db                 = null
+    taxonomic_level            = 'S'
+    kmer_len                   = 100
+    top_n                      = 5
 }
 ```
 
-The full set of parameters can be found in <https://github.com/phac-nml/iridanext-example-nf/blob/main/nextflow.config>.
+**nextflow_schema.json**
+```json
+"databases": {
+    "title": "Databases",
+    "type": "object",
+    "description": "The Kraken2 and Bracken databases required for analysis.",
+    "fa_icon": "fas fa-terminal",
+    "default": "",
+    "properties": {
+        "database": {
+            "type": "string",
+            "pattern": "^\\S+$",
+            "exists": true,
+            "format": "directory-path",
+            "description": "Path to database containing both the Kraken2 and Bracken database files (do not use symlinks)"
+        }
+    }
+}
+```
+
+- The **input** parameter is used by each pipeline to pass the `samplesheet.csv` file containing samples and associated data. This is described in more detail in the [Input](#input) section.
+- The **database** parameter defines a path/URI to external files needed by the pipeline. In this case a directory of Kraken2/Bracken database files (the **kraken2_db** and **bracken_db** parameters in this pipeline allow passing the locations to Kraken2 and Bracken files separately).
+- The **taxonomic_level**, **kmer_len**, and **top_n** are parameters providing additional controls over the pipeline and require passing in strings or numbers respectively (parameter type is defined in the `nextflow_schema.json` file).
+
+This example illustrates two major types of parameters: those that contain **simple values** (e.g., integers) and those that reference **external data** (e.g., databases).
+
+## 3.2. Simple value parameters
+
+These parameters are those that contain values that don't reference any external data, that is primitive types (e.g., strings, numbers).
+
+The type of the parameter is defined in the `nextflow_schema.json` file, following the [nf-schema][] Nextflow JSON schema syntax.
+
+For example, below is the JSON Schema entry in the [speciesabundance][] pipeline for the **top_n** parameter (an integer).
+
+```json
+"top_n": {
+    "type": "integer",
+    "default": 5,
+    "description": "Defines the number of top results to keep from the BRACKEN report",
+    "minimum": 1
+}
+```
+
+The type is specified type **type** in the JSON Schema (an `integer`), and the keywords **minimum** (and **maximum**) can be used to specify the range of acceptable values.
+
+Another example is the **kmer_len** parameter in the [speciesabundance][] pipeline.
+
+```json
+"kmer_len": {
+    "type": "integer",
+    "errorMessage": "kmer_len must be provided as one of: 50, 75, 100, 150, 200, 250, or 300",
+    "enum": [50, 75, 100, 150, 200, 250, 300],
+    "description": "Requested kmer length for the BRACKEN distribution file used during abundance estimation",
+    "default": 100
+}
+```
+
+In this case, the **type** is still `integer`, but the **enum** keyword is used to restrict the set of possible values.
+
+## 3.3. Referencing external data
+
+The other type of parameter is one which can be used to reference external data (e.g., databases or other external files required to run the pipeline). These should be defined as a `string` type and use the **format** keyword to further refine how to interpret the type (see the [nf-schema format documentation][nf-schema format]).
+
+For example, in the [speciesabundance][] pipeline.
+
+```json
+"database": {
+    "type": "string",
+    "pattern": "^\\S+$",
+    "exists": true,
+    "format": "directory-path",
+    "description": "Path to database containing both the Kraken2 and Bracken database files (do not use symlinks)"
+}
+```
+
+The above specifies that the value of the parameter `--database` is a string which is interpreted as a `directory-path`.
+
+* This could be a **local path**: `--database /path/to/kraken_bracken_database/`
+* Or, this could be a **URI** specifying some resource. For example, using [Azure Blob Storage][]: `--database az://location/of/kraken_braken_database/`.
+
+When the pipeline is loaded within [IRIDA Next][irida-next], this type of parameter is rendered as a text box which can be used to fill in the path or URI to external data:
+
+![species-abundance-databases.png][]
+
+In order to configure a selectable list of external data in IRIDA Next, you can refer to the following section.
+
+## 3.4. Pipelines and parameters in IRIDA Next
+
+### 3.4.1. Loading pipelines
+
+Pipelines are registered within IRIDA Next by adding to a [pipelines.json][irida-next-pipelines] file. For example:
+
+**pipelines.json**
+```json
+{
+  "url": "https://github.com/phac-nml/speciesabundance",
+  "name": "phac-nml/speciesabundance",
+  "description": "IRIDA Next speciesabundance",
+  "versions": [
+    {
+      "name": "2.2.0"
+    }
+  ]
+}
+```
+
+When IRIDA Next is started, it will read the `pipelines.json` file, download a local copy of the pipeline `nextflow_schema.json` and `assets/schema_input.json` files within the specified repository and version (tag or branch) of a pipeline, and use these JSON Schema files to render a user interface for the pipeline.
+
+![irida-next-species-abundance.png][]
+
+### 3.4.2. Overriding parameters
+
+In addition to registering pipelines, the `pipelines.json` file can be used to override any of the Nextflow JSON Schema elements for a particular pipeline (e.g., default values, hidding parameters from IRIDA Next). For more information on this, please refer to the [IRIDA Next Schema Overrides documentation][irida-next-schema-overrides].
+
+Overriding a database/external data parameter and configuring it as an enumerated type in the IRIDA Next `pipelines.json` can be a way to set up a drop-down list of pre-configured databases and labels to display in the IRIDA Next interface.
+
+For example, for the [speciesabundance][] pipeline:
+
+```json
+{
+  "url": "https://github.com/phac-nml/speciesabundance",
+  "name": "phac-nml/speciesabundance",
+  "description": "IRIDA Next speciesabundance",
+  "overrides": {
+    "definitions": {
+      "databases": {
+        "properties": {
+          "database": {
+            "enum": [
+              ["Database 1 label", "/path/to/database1/"],
+              ["Database 2 label", "/path/to/database2/"]
+            ]
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+Here, the `enum` section in the JSON file contains a list of 2-element lists with the label and path to the database:
+
+```json
+"enum": [
+  ["Database 1 label", "/path/to/database1/"],
+  ["Database 2 label", "/path/to/database2/"]
+]
+```
+
+The format of each element of the enum `["label", "path/uri"]` is:
+* `"label"`: The label to display in IRIDA Next.
+* `"path/uri"`: The local path or URI for the parameter (this value gets passed to Nextflow as e.g., `--database /path`).
+
+IRIDA Next would render the above example as a drop-down menu with two elements:
+
+![species-abundance-databases-selection.png]
+
+Selecting **Database 1 label** in IRIDA Next and submitting the pipeline will then pass `--database /path/to/database1/` as a parameter to the pipeline in Nextflow.
 
 <a name="output"></a>
 
@@ -892,3 +1064,12 @@ specific language governing permissions and limitations under the License.
 [def]: #52
 [errorStrategy]: https://www.nextflow.io/docs/latest/reference/process.html#errorstrategy
 [fetchdatairidanext]: https://github.com/phac-nml/fetchdatairidanext
+[speciesabundance]: https://github.com/phac-nml/speciesabundance
+[nf-schema]: https://nextflow-io.github.io/nf-schema/latest/
+[nf-schema format]: https://nextflow-io.github.io/nf-schema/latest/nextflow_schema/nextflow_schema_specification/#format
+[Azure Blob Storage]: https://www.nextflow.io/docs/latest/azure.html#azure-blob-storage
+[irida-next-species-abundance.png]: images/irida-next-species-abundance.png
+[species-abundance-databases.png]: images/speciesabundance-databases.png
+[species-abundance-databases-selection.png]: images/speciesabundance-databases-selection.png
+[irida-next-pipelines]: https://phac-nml.github.io/irida-next/docs/configuration/pipelines
+[irida-next-schema-overrides]: https://phac-nml.github.io/irida-next/docs/configuration/pipelines#schema-overrides
