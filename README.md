@@ -4,6 +4,12 @@ _This document is in-progress and should be considered as a **DRAFT** that is su
 
 This document describes the specification for developing [IRIDA Next][irida-next] Nextflow pipelines.
 
+# Pipeline Integration Checklist
+
+A checklist that can be used by pipeline developers as an aid for integration of pipelines into GSP (Genomics Surveillance Platform) is available at: [GSP Pipelines Integration Checklist][pipeline-checklist].
+
+# Table of Contents
+
 - [1. Starting development](#1-starting-development)
   * [1.1. Developing a pipeline to contribute to nf-core](#11-developing-a-pipeline-to-contribute-to-nf-core)
   * [1.2. Developing a pipeline which won't be contributed to nf-core](#12-developing-a-pipeline-which-wont-be-contributed-to-nf-core)
@@ -1073,3 +1079,4 @@ specific language governing permissions and limitations under the License.
 [species-abundance-databases-selection.png]: images/speciesabundance-databases-selection.png
 [irida-next-pipelines]: https://phac-nml.github.io/irida-next/docs/configuration/pipelines
 [irida-next-schema-overrides]: https://phac-nml.github.io/irida-next/docs/configuration/pipelines#schema-overrides
+[pipeline-checklist]: docs/GSP%20Pipeline%20Integration%20Checklist%20v1.pdf
