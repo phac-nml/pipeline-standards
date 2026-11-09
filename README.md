@@ -663,6 +663,83 @@ When setup this way, the pipeline will generate an `iridanext.output.json.gz` fi
 
 Please see the [nf-iridanext documentation][nf-iridanext] for more details on integrating output files and metadata produced from the pipeline into this IRIDA Next integration file.
 
+## 4.3. Output JSON Schema
+
+Each pipeline is expected to include an `assets/schema_output.json` file, which contains a [JSON Schema][] used to define the expected output files and metadata fields from a pipeline that get written to the `iridanext.output.json.gz` file.
+
+The purpose of `schema_output.json` is to be be consumed by downstream tools that can be used to list and validate expected metadata and files produced by a pipeline.
+
+### 4.3.1. Minimal example
+
+An minimal example JSON schema and corresponding `iridanext.output.json` file are given below:
+
+**assets/output_schema.json**
+```json
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "https://raw.githubusercontent.com/phac-nml/nf-iridanext/main/plugins/nf-iridanext/src/resources/nextflow/iridanext/output_schema.json",
+  "title": "Default IRIDA Next JSON output schema",
+  "description": "Default schema used for validating IRIDA Next JSON output data",
+  "type": "object",
+  "properties": {
+    "files": {
+      "type": "object",
+      "properties": {
+        "global": {
+          "type": "array"
+        },
+        "samples": {
+          "type": "object"
+        }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "samples": {
+          "type": "object"
+        }
+      }
+    }
+  }
+}
+```
+
+**iridanext.output.json**
+```json
+{
+  "files": {
+    "global": [],
+    "samples": {}
+  },
+  "metadata": {
+    "samples": {}
+  }
+}
+```
+
+You can verify that the output JSON file matches the schema by copying the the schema and JSON contents to an online validator like <https://www.jsonschemavalidator.net/>.
+
+### 4.3.2. More complex example
+
+A more complex example can be seen with the [speciesabundance](https://github.com/phac-nml/speciesabundance) pipeline. That is:
+
+* [assets/schema_output.json][speciesabundance_output_schema]
+* [iridanext.output.json][speciesabundance_output_json]
+
+You can verify that the output JSON file matches the schema by copying the the schema and JSON contents to an online validator like <https://www.jsonschemavalidator.net/>.
+
+### 4.3.3. Evaluation in pipeline test suite
+
+The **nf-iridanext** plugin can be configured to check the final `iridanext.output.json` file against the `assets/output_schema.json` schema for a pipeline using nextflow config options. See, for example: <https://github.com/phac-nml/speciesabundance/blob/dev/tests/nextflow.config#L9-L10>
+
+```
+iridanext.output.schema = "${projectDir}/assets/schema_output.json"
+iridanext.output.validate = true
+```
+
+As of right now, this is only useful for automated testing of a pipeline to verify the provided output JSON schema and produced `iridanext.output.json` files are consistent. Enabling this validation option will cause the pipeline to produce no `iridanext.output.json` file if it does not match the provided schema and report an error. This is not used when integrating with IRIDA Next right now as we have not implemented code to handle these specific types of validation errors in IRIDA Next.
+
 # 5. Error handling
 
 There are a number of different options for error handling of pipelines launched from IRIDA Next. These can be divided up into: **unrecoverable errors** and **recoverable errors**.
@@ -1080,3 +1157,7 @@ specific language governing permissions and limitations under the License.
 [irida-next-pipelines]: https://phac-nml.github.io/irida-next/docs/configuration/pipelines
 [irida-next-schema-overrides]: https://phac-nml.github.io/irida-next/docs/configuration/pipelines#schema-overrides
 [pipeline-checklist]: docs/GSP%20Pipeline%20Integration%20Checklist%20v1.pdf
+[JSON Schema]: https://json-schema.org/
+[speciesabundance_output_schema]: https://github.com/phac-nml/speciesabundance/blob/dev/assets/schema_output.json
+[speciesabundance_output_json]: https://github.com/phac-nml/speciesabundance/blob/dev/tests/data/test_iridanext.output.json
+
